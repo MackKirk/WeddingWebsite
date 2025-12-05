@@ -1,0 +1,67 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from typing import List
+from app.core.database import get_db
+from app.core.dependencies import get_current_user
+from app.models.wedding_info_section import WeddingInfoSection
+from app.models.admin_user import AdminUser
+from app.schemas.wedding_info import (
+    WeddingInfoSection as WeddingInfoSectionSchema,
+    WeddingInfoSectionCreate,
+    WeddingInfoSectionUpdate
+)
+
+router = APIRouter(prefix="/api/info", tags=["info"])
+
+
+@router.get("", response_model=List[WeddingInfoSectionSchema])
+def get_info_sections(db: Session = Depends(get_db)):
+    return db.query(WeddingInfoSection).all()
+
+
+@router.post("", response_model=WeddingInfoSectionSchema)
+def create_info_section(
+    section: WeddingInfoSectionCreate,
+    db: Session = Depends(get_db),
+    current_user: AdminUser = Depends(get_current_user)
+):
+    db_section = WeddingInfoSection(**section.model_dump())
+    db.add(db_section)
+    db.commit()
+    db.refresh(db_section)
+    return db_section
+
+
+@router.put("/{section_id}", response_model=WeddingInfoSectionSchema)
+def update_info_section(
+    section_id: int,
+    section_update: WeddingInfoSectionUpdate,
+    db: Session = Depends(get_db),
+    current_user: AdminUser = Depends(get_current_user)
+):
+    db_section = db.query(WeddingInfoSection).filter(WeddingInfoSection.id == section_id).first()
+    if not db_section:
+        raise HTTPException(status_code=404, detail="Info section not found")
+    
+    update_data = section_update.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(db_section, field, value)
+    
+    db.commit()
+    db.refresh(db_section)
+    return db_section
+
+
+@router.delete("/{section_id}")
+def delete_info_section(
+    section_id: int,
+    db: Session = Depends(get_db),
+    current_user: AdminUser = Depends(get_current_user)
+):
+    db_section = db.query(WeddingInfoSection).filter(WeddingInfoSection.id == section_id).first()
+    if not db_section:
+        raise HTTPException(status_code=404, detail="Info section not found")
+    db.delete(db_section)
+    db.commit()
+    return {"message": "Info section deleted"}
+
