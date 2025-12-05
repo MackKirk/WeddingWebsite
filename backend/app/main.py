@@ -3,16 +3,38 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pathlib import Path
+import sys
+import logging
+
+# Configurar logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger(__name__)
+
+logger.info("=" * 50)
+logger.info("Starting Wedding Website Application")
+logger.info("=" * 50)
+
 from app.core.config import settings
 from app.core.database import engine, Base
 from app.routers import (
     auth, home, story, info, timeline, gallery, gifts, rsvp, upload
 )
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+logger.info("Creating database tables...")
+try:
+    Base.metadata.create_all(bind=engine)
+    logger.info("Database tables created successfully")
+except Exception as e:
+    logger.error(f"Error creating database tables: {e}")
 
 app = FastAPI(title="Wedding Website API")
+logger.info("FastAPI app created")
 
 # CORS middleware - menos restritivo já que está tudo no mesmo domínio
 app.add_middleware(
@@ -41,6 +63,7 @@ app.include_router(upload.router)
 
 # Serve frontend static files
 # Tenta múltiplos caminhos possíveis
+logger.info("Checking for frontend build...")
 frontend_dist = None
 possible_paths = [
     Path(__file__).parent.parent / "frontend_dist",  # backend/frontend_dist
@@ -48,15 +71,27 @@ possible_paths = [
 ]
 
 for path in possible_paths:
-    if path.exists() and (path / "index.html").exists():
-        frontend_dist = path
-        break
+    logger.info(f"Checking path: {path}")
+    if path.exists():
+        logger.info(f"Path exists: {path}")
+        if (path / "index.html").exists():
+            logger.info(f"Found index.html at: {path}")
+            frontend_dist = path
+            break
+        else:
+            logger.warning(f"Path exists but no index.html: {path}")
+    else:
+        logger.info(f"Path does not exist: {path}")
 
 if frontend_dist:
+    logger.info(f"Serving frontend from: {frontend_dist}")
     # Serve static assets (JS, CSS, images, etc.)
     assets_dir = frontend_dist / "assets"
     if assets_dir.exists():
+        logger.info(f"Mounting assets from: {assets_dir}")
         app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+    else:
+        logger.warning(f"Assets directory not found: {assets_dir}")
     
     # Serve index.html for all non-API routes (SPA routing)
     # Esta rota DEVE ser a última para não interceptar rotas da API
@@ -74,16 +109,27 @@ if frontend_dist:
         from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Frontend not found")
 else:
+    logger.warning("Frontend not found! Serving API only.")
     # Se frontend não existe, pelo menos serve uma mensagem na raiz
     @app.get("/")
     def root():
-        return {"message": "Wedding Website API - Frontend not built. Run: cd frontend && npm run build"}
+        return {
+            "message": "Wedding Website API",
+            "status": "running",
+            "frontend": "not built",
+            "info": "Frontend files not found. Check build logs."
+        }
 
 
 @app.on_event("startup")
 async def startup_event():
+    logger.info("=" * 50)
+    logger.info("Startup event triggered")
+    logger.info("=" * 50)
+    
     # Initialize admin user if it doesn't exist
     try:
+        logger.info("Initializing admin user...")
         from app.core.database import SessionLocal
         from app.models.admin_user import AdminUser
         from app.core.security import get_password_hash
@@ -92,17 +138,25 @@ async def startup_event():
         try:
             admin = db.query(AdminUser).filter(AdminUser.username == settings.ADMIN_USERNAME).first()
             if not admin:
+                logger.info(f"Creating admin user: {settings.ADMIN_USERNAME}")
                 admin = AdminUser(
                     username=settings.ADMIN_USERNAME,
                     hashed_password=get_password_hash(settings.ADMIN_PASSWORD)
                 )
                 db.add(admin)
                 db.commit()
+                logger.info("Admin user created successfully")
+            else:
+                logger.info("Admin user already exists")
         except Exception as e:
-            print(f"Warning: Could not initialize admin user: {e}")
+            logger.error(f"Error initializing admin user: {e}", exc_info=True)
         finally:
             db.close()
     except Exception as e:
-        print(f"Warning: Startup event error: {e}")
+        logger.error(f"Startup event error: {e}", exc_info=True)
         # Não falha o servidor se houver erro no startup
+    
+    logger.info("=" * 50)
+    logger.info("Startup completed")
+    logger.info("=" * 50)
 
