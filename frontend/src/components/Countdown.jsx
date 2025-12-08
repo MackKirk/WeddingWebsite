@@ -101,22 +101,10 @@ const Countdown = ({ weddingDate }) => {
           transition={{ delay: index * 0.1, duration: 0.5, ease: 'easeOut' }}
           className="text-center min-w-[60px] md:min-w-[80px]"
         >
-          <div 
-            className="text-5xl md:text-6xl lg:text-7xl font-display text-dusty-rose font-bold leading-none mb-2"
-            style={{
-              textShadow: '-1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white, 0 0 4px white, 0 0 4px white',
-              WebkitTextStroke: '1px white',
-              WebkitTextFillColor: '#CFA7A4'
-            }}
-          >
+          <div className="text-5xl md:text-6xl lg:text-7xl font-body text-dusty-rose font-bold leading-none mb-2">
             {String(unit.value).padStart(2, '0')}
           </div>
-          <div 
-            className="text-[10px] md:text-xs font-body text-dusty-rose/60 mt-2 uppercase tracking-[0.15em] font-light"
-            style={{
-              textShadow: '-0.5px -0.5px 0 white, 0.5px -0.5px 0 white, -0.5px 0.5px 0 white, 0.5px 0.5px 0 white, 0 0 2px white',
-            }}
-          >
+          <div className="text-[10px] md:text-xs font-body text-dusty-rose/60 mt-2 uppercase tracking-[0.15em] font-light">
             {unit.label}
           </div>
         </motion.div>
