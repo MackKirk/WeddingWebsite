@@ -47,6 +47,43 @@ def debug_admin():
     except Exception as e:
         return {"error": str(e), "type": type(e).__name__}
 
+@app.get("/debug/azure")
+def debug_azure():
+    """Debug endpoint to check Azure Blob Storage configuration"""
+    try:
+        from app.core.config import settings
+        from app.core.azure_storage import get_container_client
+        
+        azure_info = {
+            "connection_string_configured": bool(settings.AZURE_STORAGE_CONNECTION_STRING),
+            "connection_string_length": len(settings.AZURE_STORAGE_CONNECTION_STRING) if settings.AZURE_STORAGE_CONNECTION_STRING else 0,
+            "container_name": settings.AZURE_STORAGE_CONTAINER,
+            "status": "unknown"
+        }
+        
+        if not settings.AZURE_STORAGE_CONNECTION_STRING:
+            azure_info["status"] = "not_configured"
+            azure_info["error"] = "AZURE_STORAGE_CONNECTION_STRING is not set"
+            return azure_info
+        
+        try:
+            container_client = get_container_client()
+            if container_client:
+                azure_info["status"] = "connected"
+                azure_info["container_exists"] = container_client.exists()
+            else:
+                azure_info["status"] = "connection_failed"
+                azure_info["error"] = "Failed to get container client"
+        except Exception as e:
+            azure_info["status"] = "error"
+            azure_info["error"] = str(e)
+            import traceback
+            azure_info["traceback"] = traceback.format_exc()
+        
+        return azure_info
+    except Exception as e:
+        return {"error": str(e), "type": type(e).__name__}
+
 # Agora importa o resto
 try:
     from app.core.config import settings

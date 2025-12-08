@@ -31,13 +31,17 @@ async def upload_file(
     content_type = file.content_type or "image/jpeg"
     
     # Try Azure Blob Storage first
+    import sys
+    print(f"Attempting Azure upload for file: {file.filename}, size: {len(file_content)} bytes", file=sys.stdout)
     blob_url = upload_to_blob(file_content, file.filename, content_type)
     
     if blob_url:
         # Successfully uploaded to Azure
+        print(f"Successfully uploaded to Azure Blob Storage: {blob_url}", file=sys.stdout)
         return {"url": blob_url}
     
     # Fallback to local storage
+    print("Azure upload failed, falling back to local storage", file=sys.stderr)
     import uuid
     unique_filename = f"{uuid.uuid4()}{file_ext}"
     file_path = UPLOAD_DIR / unique_filename
