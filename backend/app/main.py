@@ -18,24 +18,29 @@ try:
     from app.core.config import settings
     from app.core.database import engine, Base
     
-    # Criar tabelas
-    try:
-        Base.metadata.create_all(bind=engine)
-    except Exception as e:
-        print(f"Warning: Could not create tables: {e}", file=sys.stderr)
-    
     # CORS middleware
-    cors_origins = getattr(settings, 'CORS_ORIGINS', ['*'])
-    if not cors_origins or cors_origins == ['*']:
-        cors_origins = ['*']
-    
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=cors_origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    try:
+        cors_origins = getattr(settings, 'CORS_ORIGINS', ['*'])
+        if not cors_origins or cors_origins == ['*']:
+            cors_origins = ['*']
+        
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=cors_origins,
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
+    except Exception as e:
+        print(f"Warning: CORS setup failed: {e}", file=sys.stderr)
+        # CORS padrão permissivo
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
     
     # Static files for uploads
     try:
@@ -49,25 +54,41 @@ except Exception as e:
     print(f"Error initializing app: {e}", file=sys.stderr)
     import traceback
     traceback.print_exc()
+    # CORS mínimo para não crashar
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 # Include routers (importante: antes do catch-all do frontend)
-try:
-    from app.routers import (
-        auth, home, story, info, timeline, gallery, gifts, rsvp, upload
-    )
-    app.include_router(auth.router)
-    app.include_router(home.router)
-    app.include_router(story.router)
-    app.include_router(info.router)
-    app.include_router(timeline.router)
-    app.include_router(gallery.router)
-    app.include_router(gifts.router)
-    app.include_router(rsvp.router)
-    app.include_router(upload.router)
-except Exception as e:
-    print(f"Warning: Could not load some routers: {e}", file=sys.stderr)
-    import traceback
-    traceback.print_exc()
+routers_to_load = [
+    ('auth', 'auth'),
+    ('home', 'home'),
+    ('story', 'story'),
+    ('info', 'info'),
+    ('timeline', 'timeline'),
+    ('gallery', 'gallery'),
+    ('gifts', 'gifts'),
+    ('rsvp', 'rsvp'),
+    ('upload', 'upload'),
+]
+
+for module_name, router_name in routers_to_load:
+    try:
+        module = __import__(f'app.routers.{module_name}', fromlist=[router_name])
+        router = getattr(module, 'router', None)
+        if router:
+            app.include_router(router)
+            print(f"Loaded router: {module_name}", file=sys.stdout)
+        else:
+            print(f"Warning: Router {module_name} has no 'router' attribute", file=sys.stderr)
+    except Exception as e:
+        print(f"Warning: Could not load router {module_name}: {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc()
 
 # Serve frontend static files
 try:
@@ -98,28 +119,58 @@ except Exception as e:
 
 @app.on_event("startup")
 async def startup_event():
+    print("=" * 50, file=sys.stdout)
+    print("Startup event started", file=sys.stdout)
+    print("=" * 50, file=sys.stdout)
+    
+    # Criar tabelas primeiro
+    try:
+        from app.core.database import engine, Base
+        if engine is not None:
+            Base.metadata.create_all(bind=engine)
+            print("Database tables created", file=sys.stdout)
+        else:
+            print("Warning: Database engine not initialized", file=sys.stderr)
+    except Exception as e:
+        print(f"Warning: Could not create tables: {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc()
+    
+    # Criar admin user
     try:
         from app.core.database import SessionLocal
-        from app.models.admin_user import AdminUser
-        from app.core.security import get_password_hash
-        from app.core.config import settings
-        
-        db = SessionLocal()
-        try:
-            admin = db.query(AdminUser).filter(AdminUser.username == settings.ADMIN_USERNAME).first()
-            if not admin:
-                admin = AdminUser(
-                    username=settings.ADMIN_USERNAME,
-                    hashed_password=get_password_hash(settings.ADMIN_PASSWORD)
-                )
-                db.add(admin)
-                db.commit()
-        except Exception as e:
-            print(f"Warning: Could not create admin user: {e}", file=sys.stderr)
-        finally:
-            db.close()
+        if SessionLocal is None:
+            print("Warning: SessionLocal not initialized, skipping admin creation", file=sys.stderr)
+        else:
+            from app.models.admin_user import AdminUser
+            from app.core.security import get_password_hash
+            from app.core.config import settings
+            
+            db = SessionLocal()
+            try:
+                admin = db.query(AdminUser).filter(AdminUser.username == settings.ADMIN_USERNAME).first()
+                if not admin:
+                    admin = AdminUser(
+                        username=settings.ADMIN_USERNAME,
+                        hashed_password=get_password_hash(settings.ADMIN_PASSWORD)
+                    )
+                    db.add(admin)
+                    db.commit()
+                    print(f"Admin user created: {settings.ADMIN_USERNAME}", file=sys.stdout)
+                else:
+                    print(f"Admin user already exists: {settings.ADMIN_USERNAME}", file=sys.stdout)
+            except Exception as e:
+                print(f"Warning: Could not create admin user: {e}", file=sys.stderr)
+                import traceback
+                traceback.print_exc()
+            finally:
+                db.close()
     except Exception as e:
         print(f"Warning: Startup error: {e}", file=sys.stderr)
         import traceback
         traceback.print_exc()
+    
+    print("=" * 50, file=sys.stdout)
+    print("Startup completed", file=sys.stdout)
+    print("=" * 50, file=sys.stdout)
 
