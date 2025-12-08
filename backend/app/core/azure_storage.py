@@ -1,5 +1,5 @@
 """Azure Blob Storage integration"""
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, ContentSettings
 from app.core.config import settings
 import os
 from typing import Optional
@@ -78,10 +78,11 @@ def upload_to_blob(file_content: bytes, filename: str, content_type: str = "imag
         
         # Upload blob
         blob_client = container_client.get_blob_client(unique_filename)
+        content_settings = ContentSettings(content_type=content_type)
         blob_client.upload_blob(
             file_content,
             overwrite=True,
-            content_settings={"content_type": content_type}
+            content_settings=content_settings
         )
         
         print(f"Blob uploaded successfully: {unique_filename}", file=sys.stdout)
