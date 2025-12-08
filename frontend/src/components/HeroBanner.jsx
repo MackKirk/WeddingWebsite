@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion'
 import Countdown from './Countdown'
+import { normalizeImageUrl } from '../utils/imageUrl'
 
 const HeroBanner = ({ heroText, heroImageUrl, subtitle, weddingDate }) => {
   const defaultImage = 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80'
-  const imageUrl = heroImageUrl || defaultImage
+  const imageUrl = normalizeImageUrl(heroImageUrl) || defaultImage
 
   return (
     <div className="relative h-screen flex items-center justify-center overflow-hidden">

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { ExternalLink, Gift } from 'lucide-react'
+import { normalizeImageUrl } from '../utils/imageUrl'
 
 const GiftCard = ({ gift }) => {
   const isExternal = gift.item_type === 'external'
@@ -20,9 +21,12 @@ const GiftCard = ({ gift }) => {
           {gift.image_url && (
             <div className="relative h-56 overflow-hidden">
               <img
-                src={gift.image_url}
+                src={normalizeImageUrl(gift.image_url)}
                 alt={gift.title}
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                onError={(e) => {
+                  console.error('Image failed to load:', gift.image_url)
+                }}
               />
             </div>
           )}

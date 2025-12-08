@@ -7,6 +7,7 @@ import {
   uploadFile,
 } from '../../services/content'
 import { Plus, Trash2, Upload, Save, X, Image as ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react'
+import { normalizeImageUrl } from '../../utils/imageUrl'
 
 const GalleryTab = () => {
   const [images, setImages] = useState([])
@@ -94,9 +95,13 @@ const GalleryTab = () => {
           <div key={image.id} className="relative group bg-white rounded-lg border border-gold/20 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
             <div className="relative">
               <img
-                src={image.image_url}
+                src={normalizeImageUrl(image.image_url)}
                 alt={image.caption || 'Gallery image'}
                 className="w-full h-48 object-cover"
+                onError={(e) => {
+                  console.error('Image failed to load:', image.image_url)
+                  e.target.style.display = 'none'
+                }}
                 onLoad={(e) => {
                   // Armazenar dimensões quando a imagem carregar
                   const img = e.target

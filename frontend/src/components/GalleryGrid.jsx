@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Lightbox from './Lightbox'
+import { normalizeImageUrl } from '../utils/imageUrl'
 
 const GalleryGrid = ({ images }) => {
   const [selectedImage, setSelectedImage] = useState(null)
@@ -28,9 +29,13 @@ const GalleryGrid = ({ images }) => {
           >
             <div className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500">
               <img
-                src={image.image_url}
+                src={normalizeImageUrl(image.image_url)}
                 alt={image.caption || 'Gallery image'}
                 className="w-full h-auto transition-transform duration-700 ease-out group-hover:scale-110"
+                onError={(e) => {
+                  console.error('Image failed to load:', image.image_url)
+                  e.target.style.display = 'none'
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               {image.caption && (

@@ -9,6 +9,7 @@ import {
   createStoryImage,
   deleteStoryImage,
 } from '../../services/content'
+import { normalizeImageUrl } from '../../utils/imageUrl'
 import { Plus, Trash2, Edit2, Save, X } from 'lucide-react'
 
 const StoryContentTab = () => {
@@ -147,9 +148,12 @@ const StoryContentTab = () => {
           {images.map((image) => (
             <div key={image.id} className="relative group">
               <img
-                src={image.image_url}
+                src={normalizeImageUrl(image.image_url)}
                 alt={image.caption || 'Story image'}
                 className="w-full h-32 object-cover rounded-lg"
+                onError={(e) => {
+                  console.error('Image failed to load:', image.image_url)
+                }}
               />
               <button
                 onClick={() => handleDeleteImage(image.id)}

@@ -5,13 +5,14 @@ import {
   createInfoSection,
   updateInfoSection,
   deleteInfoSection,
+  uploadFile,
 } from '../../services/content'
 import {
-  Plus, Trash2, Edit2, Save, X,
+  Plus, Trash2, Edit2, Save, X, Upload,
   Calendar, MapPin, Shirt, Car, Hotel, Heart, Circle, Cake, Music, 
   UtensilsCrossed, Clock, Gift, Camera, Users, Home, Navigation,
   Building2, CarFront, ParkingCircle, BedDouble, Wifi, Phone,
-  Mail, Globe, Star, Sparkles, Flower2, Leaf, Sun, Moon
+  Mail, Globe, Star, Sparkles, Flower2, Leaf, Sun, Moon, Image as ImageIcon, CheckCircle2, AlertCircle
 } from 'lucide-react'
 
 // Available icons for wedding information
@@ -161,23 +162,96 @@ const SectionForm = ({ section, onClose, onSave }) => {
     additional_info: section?.additional_info || '',
   })
   const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [showIconPicker, setShowIconPicker] = useState(false)
+  const [file, setFile] = useState(null)
+  const [imageInfo, setImageInfo] = useState(null)
+  const [preview, setPreview] = useState(null)
+  const [uploadProgress, setUploadProgress] = useState(null)
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0]
+    if (!selectedFile) return
+
+    // Validate size (5MB)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (selectedFile.size > maxSize) {
+      alert('The image is too large. Please use an image smaller than 5MB.')
+      return
+    }
+
+    setFile(selectedFile)
+
+    // Create preview
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      setPreview(e.target.result)
+    }
+    reader.readAsDataURL(selectedFile)
+
+    // Get image information
+    const img = new Image()
+    img.onload = () => {
+      const fileSizeMB = (selectedFile.size / (1024 * 1024)).toFixed(2)
+      setImageInfo({
+        width: img.width,
+        height: img.height,
+        size: fileSizeMB,
+        aspectRatio: (img.width / img.height).toFixed(2),
+        fileName: selectedFile.name,
+      })
+    }
+    img.src = URL.createObjectURL(selectedFile)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
+    setUploadProgress('Starting upload...')
+    
     try {
+      // If file is selected, upload it first
+      if (file) {
+        setUploading(true)
+        try {
+          const response = await uploadFile(file)
+          setFormData({ ...formData, image_url: response.data.url })
+          setUploadProgress('Upload completed successfully!')
+        } catch (error) {
+          console.error('Error uploading image:', error)
+          setUploadProgress('Error uploading image. Please try again.')
+          alert('Error uploading image')
+          setSaving(false)
+          setUploading(false)
+          return
+        } finally {
+          setUploading(false)
+        }
+      }
+
+      // Convert empty strings to null for optional fields
+      const dataToSend = {
+        ...formData,
+        description: formData.description || null,
+        icon: formData.icon || null,
+        map_embed_url: formData.map_embed_url || null,
+        image_url: formData.image_url || null,
+        additional_info: formData.additional_info || null,
+      }
+
       if (section) {
-        await updateInfoSection(section.id, formData)
+        await updateInfoSection(section.id, dataToSend)
       } else {
-        await createInfoSection(formData)
+        await createInfoSection(dataToSend)
       }
       onSave()
       onClose()
     } catch (error) {
       console.error('Error saving section:', error)
+      alert('Error saving section')
     } finally {
       setSaving(false)
+      setTimeout(() => setUploadProgress(null), 3000)
     }
   }
 
@@ -218,15 +292,104 @@ const SectionForm = ({ section, onClose, onSave }) => {
         />
         <div>
           <label className="block text-dusty-rose font-body font-medium mb-2">
-            Image URL (optional)
+            <div className="flex items-center gap-2">
+              <Upload size={18} />
+              Upload Image to Azure Blob Storage
+            </div>
+            <span className="text-xs text-dusty-rose/60 font-normal block mt-1">
+              Formats: JPG, PNG, GIF, WEBP. Maximum 5MB.
+            </span>
           </label>
           <input
-            type="url"
-            placeholder="https://..."
-            value={formData.image_url || ''}
-            onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
             className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
           />
+          
+          {/* Preview and image information */}
+          {preview && imageInfo && (
+            <div className="mt-4 p-4 bg-white rounded-lg border border-gold/30">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0">
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className="w-32 h-32 object-cover rounded-lg border border-gold/20"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-dusty-rose mb-2">Image Information</h4>
+                  <div className="space-y-1 text-sm text-dusty-rose/80">
+                    <div className="flex items-center gap-2">
+                      <ImageIcon size={14} />
+                      <span><strong>Name:</strong> {imageInfo.fileName}</span>
+                    </div>
+                    <div>
+                      <strong>Dimensions:</strong> {imageInfo.width} × {imageInfo.height}px
+                      {imageInfo.width >= 1920 && imageInfo.height >= 1080 && (
+                        <span className="ml-2 text-green-600 flex items-center gap-1">
+                          <CheckCircle2 size={12} />
+                          Ideal
+                        </span>
+                      )}
+                      {(imageInfo.width < 1200 || imageInfo.height < 1200) && (
+                        <span className="ml-2 text-amber-600 flex items-center gap-1">
+                          <AlertCircle size={12} />
+                          May appear pixelated
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <strong>Size:</strong> {imageInfo.size} MB
+                      {parseFloat(imageInfo.size) > 3 && (
+                        <span className="ml-2 text-amber-600 flex items-center gap-1">
+                          <AlertCircle size={12} />
+                          Large (may take time)
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <strong>Aspect Ratio:</strong> {imageInfo.aspectRatio}:1
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Upload status */}
+          {uploadProgress && (
+            <div className={`mt-3 p-3 rounded-lg ${
+              uploadProgress.includes('Error') 
+                ? 'bg-red-50 border border-red-200 text-red-700' 
+                : 'bg-green-50 border border-green-200 text-green-700'
+            }`}>
+              <div className="flex items-center gap-2">
+                {uploadProgress.includes('Error') ? (
+                  <AlertCircle size={16} />
+                ) : (
+                  <CheckCircle2 size={16} />
+                )}
+                <span className="text-sm font-medium">{uploadProgress}</span>
+              </div>
+            </div>
+          )}
+
+          <div className="text-center text-dusty-rose/60 font-body my-4">OR</div>
+
+          <div>
+            <label className="block text-dusty-rose font-body font-medium mb-2">
+              Image URL (if already hosted)
+            </label>
+            <input
+              type="url"
+              placeholder="https://..."
+              value={formData.image_url || ''}
+              onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+              className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
+            />
+          </div>
         </div>
         <div>
           <label className="block text-dusty-rose font-body font-medium mb-2">
@@ -347,15 +510,30 @@ const SectionForm = ({ section, onClose, onSave }) => {
         <div className="flex gap-2">
           <button
             type="submit"
-            disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 bg-gold text-white rounded-lg hover:bg-gold/90 disabled:opacity-50"
+            disabled={saving || uploading || (!file && !formData.image_url && !section)}
+            className="flex items-center gap-2 px-4 py-2 bg-gold text-white rounded-lg hover:bg-gold/90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Save size={18} />
-            Save
+            {uploading ? (
+              <>
+                <Upload size={18} className="animate-pulse" />
+                Uploading...
+              </>
+            ) : (
+              <>
+                <Save size={18} />
+                Save
+              </>
+            )}
           </button>
           <button
             type="button"
-            onClick={onClose}
+            onClick={() => {
+              setFile(null)
+              setPreview(null)
+              setImageInfo(null)
+              setUploadProgress(null)
+              onClose()
+            }}
             className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
           >
             <X size={18} />

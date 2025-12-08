@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { getStorySections, getStoryImages } from '../services/content'
+import { normalizeImageUrl } from '../utils/imageUrl'
 
 const StoryPage = () => {
   const [sections, setSections] = useState([])
@@ -77,9 +78,12 @@ const StoryPage = () => {
                 className="relative overflow-hidden rounded-xl"
               >
                 <img
-                  src={image.image_url}
+                  src={normalizeImageUrl(image.image_url)}
                   alt={image.caption || 'Story image'}
                   className="w-full h-64 object-cover"
+                  onError={(e) => {
+                    console.error('Image failed to load:', image.image_url)
+                  }}
                 />
                 {image.caption && (
                   <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">

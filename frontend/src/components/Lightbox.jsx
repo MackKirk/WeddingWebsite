@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { normalizeImageUrl } from '../utils/imageUrl'
 
 const Lightbox = ({ images, initialIndex, onClose }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex)
@@ -47,9 +48,12 @@ const Lightbox = ({ images, initialIndex, onClose }) => {
           onClick={(e) => e.stopPropagation()}
         >
           <img
-            src={currentImage.image_url}
+            src={normalizeImageUrl(currentImage.image_url)}
             alt={currentImage.caption || 'Gallery image'}
             className="max-h-[90vh] w-auto rounded-lg shadow-2xl"
+            onError={(e) => {
+              console.error('Image failed to load:', currentImage.image_url)
+            }}
           />
 
           {/* Close Button */}

@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { LucideIcon, X, MapPin } from 'lucide-react'
+import { normalizeImageUrl } from '../utils/imageUrl'
 
 const InfoCard = ({ 
   icon: Icon, 
@@ -107,9 +108,12 @@ export const InfoModal = ({ section, isOpen, onClose, icon: Icon }) => {
                 className="rounded-2xl overflow-hidden border border-gold/30"
               >
                 <img
-                  src={section.image_url}
+                  src={normalizeImageUrl(section.image_url)}
                   alt={section.title}
                   className="w-full h-64 md:h-96 object-cover"
+                  onError={(e) => {
+                    console.error('Image failed to load:', section.image_url)
+                  }}
                 />
               </motion.div>
             )}
