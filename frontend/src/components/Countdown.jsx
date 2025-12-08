@@ -10,19 +10,61 @@ const Countdown = ({ weddingDate }) => {
   })
 
   useEffect(() => {
-    if (!weddingDate) return
+    if (!weddingDate) {
+      console.log('Countdown: No wedding date provided')
+      return
+    }
 
     const calculateTimeLeft = () => {
-      const now = new Date().getTime()
-      const wedding = new Date(weddingDate).getTime()
-      const difference = wedding - now
+      try {
+        const now = new Date().getTime()
+        // Parse the date string (format: YYYY-MM-DD or ISO string)
+        // Set time to end of day (23:59:59) for the wedding date
+        let weddingDateObj
+        if (typeof weddingDate === 'string') {
+          // If it's just a date string (YYYY-MM-DD), add time to end of day
+          if (weddingDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            weddingDateObj = new Date(weddingDate + 'T23:59:59')
+          } else {
+            weddingDateObj = new Date(weddingDate)
+          }
+        } else {
+          weddingDateObj = new Date(weddingDate)
+        }
+        
+        const wedding = weddingDateObj.getTime()
+        const difference = wedding - now
 
-      if (difference > 0) {
+        console.log('Countdown calculation:', {
+          now: new Date(now).toISOString(),
+          wedding: weddingDateObj.toISOString(),
+          difference: difference,
+          days: Math.floor(difference / (1000 * 60 * 60 * 24))
+        })
+
+        if (difference > 0) {
+          setTimeLeft({
+            days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+            hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+            minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+            seconds: Math.floor((difference % (1000 * 60)) / 1000),
+          })
+        } else {
+          // Wedding date has passed
+          setTimeLeft({
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+          })
+        }
+      } catch (error) {
+        console.error('Error calculating countdown:', error, 'Wedding date:', weddingDate)
         setTimeLeft({
-          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-          minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
-          seconds: Math.floor((difference % (1000 * 60)) / 1000),
+          days: 0,
+          hours: 0,
+          minutes: 0,
+          seconds: 0,
         })
       }
     }
@@ -39,6 +81,10 @@ const Countdown = ({ weddingDate }) => {
     { label: 'Minutes', value: timeLeft.minutes },
     { label: 'Seconds', value: timeLeft.seconds },
   ]
+
+  if (!weddingDate) {
+    return null
+  }
 
   return (
     <motion.div

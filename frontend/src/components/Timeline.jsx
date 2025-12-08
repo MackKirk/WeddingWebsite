@@ -47,19 +47,22 @@ const Timeline = ({ events }) => {
             className={`relative mb-12 md:mb-16 ${
               isEven ? 'md:pr-1/2 md:text-right' : 'md:pl-1/2 md:ml-auto'
             }`}
+            style={{ zIndex: 1 }}
           >
             {/* Timeline Node */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gold rounded-full border-4 border-champagne shadow-lg z-10 hidden md:block" />
+            <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gold rounded-full border-4 border-champagne shadow-lg z-20 hidden md:block pointer-events-none" />
 
             {/* Event Card */}
             <motion.div
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation()
                 const hasDetails = event.image_url || event.additional_info
+                console.log('Timeline card clicked:', event.title, 'Has details:', hasDetails, 'Image:', event.image_url, 'Additional:', event.additional_info)
                 if (hasDetails) {
                   setSelectedEvent(event)
                 }
               }}
-              className={`md:w-[45%] rounded-xl md:rounded-2xl p-6 md:p-8 border border-gold/30 shadow-lg transition-all duration-300 ${
+              className={`md:w-[45%] rounded-xl md:rounded-2xl p-6 md:p-8 border border-gold/30 shadow-lg transition-all duration-300 relative ${
                 index % 4 === 0
                   ? 'bg-champagne'
                   : index % 4 === 1
@@ -71,8 +74,9 @@ const Timeline = ({ events }) => {
                 (event.image_url || event.additional_info) ? 'cursor-pointer hover:shadow-xl hover:scale-[1.02]' : ''
               }`}
               whileHover={(event.image_url || event.additional_info) ? { scale: 1.02 } : {}}
+              style={{ zIndex: 10, position: 'relative' }}
             >
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-4" onClick={(e) => e.stopPropagation()}>
                 {event.icon && (() => {
                   const IconComponent = iconMap[event.icon] || Clock
                   return (
