@@ -1,6 +1,6 @@
 """Add text_color to home_content
 
-Revision ID: 004_add_text_color_to_home_content
+Revision ID: 004_add_text_color
 Revises: 003_add_timeline_event_fields
 Create Date: 2024-12-08 22:00:00.000000
 
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '004_add_text_color_to_home_content'
+revision = '004_add_text_color'
 down_revision = '003_add_timeline_event_fields'
 branch_labels = None
 depends_on = None
