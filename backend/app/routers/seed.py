@@ -148,42 +148,52 @@ def seed_demo_data(
                 for key, value in info_data.items():
                     setattr(existing, key, value)
 
-        # 5. Timeline Events
+        # 5. Timeline Events (with new fields: image_url and additional_info)
         timeline_events_data = [
             {
                 "time": time(15, 0),
                 "title": "Ceremony",
-                "description": "Wedding ceremony at the chapel",
+                "description": "Wedding ceremony at the beautiful Pitt Meadows Chapel",
                 "icon": "rings",
-                "order": 0
+                "order": 0,
+                "image_url": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80",
+                "additional_info": "The ceremony will begin promptly at 3:00 PM. Please arrive 15 minutes early to be seated. The ceremony will last approximately 30 minutes and will be followed by a cocktail hour. We kindly ask that phones be silenced during the ceremony."
             },
             {
                 "time": time(16, 0),
                 "title": "Cocktail Hour",
-                "description": "Welcome cocktail with appetizers",
+                "description": "Welcome cocktail with appetizers and live music",
                 "icon": "cocktail",
-                "order": 1
+                "order": 1,
+                "image_url": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&q=80",
+                "additional_info": "Enjoy a selection of signature cocktails, wine, and beer along with a variety of hors d'oeuvres. This is a great time to mingle with other guests and take photos. Live acoustic music will be provided."
             },
             {
                 "time": time(17, 30),
                 "title": "Dinner",
-                "description": "Dinner served in the main hall",
+                "description": "Dinner reception served in the main hall",
                 "icon": "dinner",
-                "order": 2
+                "order": 2,
+                "image_url": None,
+                "additional_info": "A three-course plated dinner will be served. Options include:\n\n• Grilled Salmon with seasonal vegetables\n• Prime Rib with roasted potatoes\n• Vegetarian option: Stuffed Portobello Mushroom\n• Gluten-free options available\n\nPlease inform us of any dietary restrictions when you RSVP."
             },
             {
                 "time": time(19, 0),
                 "title": "Cake & Toast",
-                "description": "Cake cutting and toast to the newlyweds",
+                "description": "Cake cutting and heartfelt toasts to the newlyweds",
                 "icon": "cake",
-                "order": 3
+                "order": 3,
+                "image_url": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&q=80",
+                "additional_info": "Join us for the traditional cake cutting ceremony followed by heartfelt speeches from our families and close friends. This is a special moment we'd love to share with all of you!"
             },
             {
                 "time": time(20, 0),
                 "title": "Reception Party",
                 "description": "Dance floor is open! Let's celebrate until late!",
                 "icon": "music",
-                "order": 4
+                "order": 4,
+                "image_url": "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=1200&q=80",
+                "additional_info": "The party continues! Our DJ will keep the dance floor alive with music from all decades. There will be an open bar, late-night snacks, and plenty of dancing. The celebration will continue until midnight. Let's make unforgettable memories together!"
             }
         ]
         
@@ -194,6 +204,10 @@ def seed_demo_data(
             ).first()
             if not existing:
                 db.add(TimelineEvent(**event_data))
+            else:
+                # Update existing events with new data (including new fields)
+                for key, value in event_data.items():
+                    setattr(existing, key, value)
 
         # 6. Gallery Images
         gallery_images_data = [

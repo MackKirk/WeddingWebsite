@@ -9,6 +9,8 @@ class TimelineEventBase(BaseModel):
     description: Optional[str] = None
     icon: Optional[str] = None
     order: int = 0
+    image_url: Optional[str] = None
+    additional_info: Optional[str] = None
 
 
 class TimelineEventCreate(TimelineEventBase):
@@ -21,6 +23,8 @@ class TimelineEventUpdate(BaseModel):
     description: Optional[str] = None
     icon: Optional[str] = None
     order: Optional[int] = None
+    image_url: Optional[str] = None
+    additional_info: Optional[str] = None
 
 
 class TimelineEvent(TimelineEventBase):
