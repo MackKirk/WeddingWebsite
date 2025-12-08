@@ -8,7 +8,7 @@ import {
 } from '../../services/content'
 import {
   Plus, Trash2, Edit2, Save, X,
-  Calendar, MapPin, Shirt, Car, Hotel, Heart, Rings, Cake, Music, 
+  Calendar, MapPin, Shirt, Car, Hotel, Heart, Ring, Cake, Music, 
   UtensilsCrossed, Clock, Gift, Camera, Users, Home, Navigation,
   Building2, CarFront, ParkingCircle, BedDouble, Wifi, Phone,
   Mail, Globe, Star, Sparkles, Flower2, Leaf, Sun, Moon
@@ -16,7 +16,7 @@ import {
 
 // Available icons for wedding information
 const availableIcons = [
-  { name: 'rings', icon: Rings, label: 'Rings' },
+  { name: 'rings', icon: Ring, label: 'Rings' },
   { name: 'heart', icon: Heart, label: 'Heart' },
   { name: 'calendar', icon: Calendar, label: 'Calendar' },
   { name: 'map-pin', icon: MapPin, label: 'Map Pin' },

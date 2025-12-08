@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import InfoCard, { InfoModal } from '../components/InfoCard'
 import { getInfoSections } from '../services/content'
 import {
-  Calendar, MapPin, Shirt, Car, Hotel, Heart, Rings, Cake, Music,
+  Calendar, MapPin, Shirt, Car, Hotel, Heart, Ring, Cake, Music,
   UtensilsCrossed, Clock, Gift, Camera, Users, Home, Navigation,
   Building2, CarFront, ParkingCircle, BedDouble, Wifi, Phone,
   Mail, Globe, Star, Sparkles, Flower2, Leaf, Sun, Moon, X
@@ -11,7 +11,7 @@ import {
 
 // Map icon names to Lucide React icons
 const iconNameMap = {
-  'rings': Rings,
+  'rings': Ring,
   'heart': Heart,
   'calendar': Calendar,
   'map-pin': MapPin,
