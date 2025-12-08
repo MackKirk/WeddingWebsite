@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     # Static files
     STATIC_DIR: str = "static/uploads"
     
+    # Azure Blob Storage
+    AZURE_STORAGE_CONNECTION_STRING: str = ""
+    AZURE_STORAGE_CONTAINER: str = "biancaswedding"
+    
     model_config = {
         "env_file": ".env",
         "case_sensitive": True,

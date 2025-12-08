@@ -108,6 +108,7 @@ routers_to_load = [
     ('gifts', 'gifts'),
     ('rsvp', 'rsvp'),
     ('upload', 'upload'),
+    ('seed', 'seed'),
 ]
 
 for module_name, router_name in routers_to_load:

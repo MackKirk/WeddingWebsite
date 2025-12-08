@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { logout } from '../services/auth'
+import { seedDemoData, clearDemoData } from '../services/content'
 import {
   Home,
   BookOpen,
@@ -12,6 +13,8 @@ import {
   Mail,
   LogOut,
   Settings,
+  Sparkles,
+  Trash2,
 } from 'lucide-react'
 import HomeContentTab from './tabs/HomeContentTab'
 import StoryContentTab from './tabs/StoryContentTab'
@@ -34,10 +37,49 @@ const tabs = [
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('home')
   const navigate = useNavigate()
+  const [seedLoading, setSeedLoading] = useState(false)
+  const [clearLoading, setClearLoading] = useState(false)
 
   const handleLogout = () => {
     logout()
     navigate('/admin/login')
+  }
+
+  const handleSeedDemo = async () => {
+    if (!confirm('Deseja adicionar conteúdo de exemplo? Isso adicionará dados de demonstração em todas as seções.')) {
+      return
+    }
+    setSeedLoading(true)
+    try {
+      const response = await seedDemoData()
+      alert('Conteúdo de exemplo adicionado com sucesso!')
+      window.location.reload() // Recarregar para ver as mudanças
+    } catch (error) {
+      console.error('Error seeding demo data:', error)
+      alert('Erro ao adicionar conteúdo de exemplo')
+    } finally {
+      setSeedLoading(false)
+    }
+  }
+
+  const handleClearDemo = async () => {
+    if (!confirm('ATENÇÃO: Isso irá remover TODO o conteúdo (exceto usuários admin). Tem certeza?')) {
+      return
+    }
+    if (!confirm('Esta ação não pode ser desfeita. Continuar?')) {
+      return
+    }
+    setClearLoading(true)
+    try {
+      const response = await clearDemoData()
+      alert('Conteúdo removido com sucesso!')
+      window.location.reload() // Recarregar para ver as mudanças
+    } catch (error) {
+      console.error('Error clearing demo data:', error)
+      alert('Erro ao remover conteúdo')
+    } finally {
+      setClearLoading(false)
+    }
   }
 
   const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.component
@@ -54,6 +96,33 @@ const Dashboard = () => {
         <div className="p-8 border-b border-gold/10">
           <h1 className="text-2xl font-display text-dusty-rose tracking-wide">Admin Panel</h1>
           <p className="text-dusty-rose/50 font-body text-sm mt-1">Content Management</p>
+        </div>
+
+        {/* Seed Data Buttons */}
+        <div className="p-4 border-b border-gold/10 space-y-2">
+          <motion.button
+            onClick={handleSeedDemo}
+            disabled={seedLoading}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full flex items-center gap-2 px-4 py-2 bg-green-500/10 text-green-700 rounded-lg hover:bg-green-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+          >
+            <Sparkles size={16} />
+            <span>Adicionar Conteúdo de Exemplo</span>
+          </motion.button>
+          <motion.button
+            onClick={handleClearDemo}
+            disabled={clearLoading}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-700 rounded-lg hover:bg-red-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+          >
+            <Trash2 size={16} />
+            <span>Limpar Todo Conteúdo</span>
+          </motion.button>
+          <p className="text-xs text-dusty-rose/50 text-center mt-2">
+            Use para ver como o site ficaria
+          </p>
         </div>
 
         <nav className="flex-1 p-4 space-y-1">

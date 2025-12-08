@@ -57,3 +57,7 @@ export const uploadFile = (file) => {
 
 export const deleteFile = (filename) => api.delete(`/api/upload/${filename}`)
 
+// Seed Data
+export const seedDemoData = () => api.post('/api/seed/demo')
+export const clearDemoData = () => api.delete('/api/seed/demo')
+

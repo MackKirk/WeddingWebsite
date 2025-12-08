@@ -17,6 +17,9 @@ class HomeContent(HomeContentBase):
         from_attributes = True
 
 
-class HomeContentUpdate(HomeContentBase):
-    pass
+class HomeContentUpdate(BaseModel):
+    hero_text: Optional[str] = None
+    hero_image_url: Optional[str] = None
+    wedding_date: Optional[date] = None
+    subtitle: Optional[str] = None
 
