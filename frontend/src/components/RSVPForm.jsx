@@ -19,7 +19,15 @@ const RSVPForm = () => {
     setIsSubmitting(true)
 
     try {
-      await createRSVP(formData)
+      // Clean up form data - convert empty strings to null and ensure num_attendees is a number
+      const cleanedData = {
+        guest_name: formData.guest_name.trim(),
+        email: formData.email.trim(),
+        num_attendees: parseInt(formData.num_attendees) || 1,
+        dietary_restrictions: formData.dietary_restrictions?.trim() || null,
+        message: formData.message?.trim() || null,
+      }
+      await createRSVP(cleanedData)
       setShowSuccess(true)
       setFormData({
         guest_name: '',

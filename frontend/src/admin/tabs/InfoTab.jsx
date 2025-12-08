@@ -6,7 +6,47 @@ import {
   updateInfoSection,
   deleteInfoSection,
 } from '../../services/content'
-import { Plus, Trash2, Edit2, Save, X } from 'lucide-react'
+import {
+  Plus, Trash2, Edit2, Save, X,
+  Calendar, MapPin, Shirt, Car, Hotel, Heart, Rings, Cake, Music, 
+  UtensilsCrossed, Clock, Gift, Camera, Users, Home, Navigation,
+  Building2, CarFront, ParkingCircle, BedDouble, Wifi, Phone,
+  Mail, Globe, Star, Sparkles, Flower2, Leaf, Sun, Moon
+} from 'lucide-react'
+
+// Available icons for wedding information
+const availableIcons = [
+  { name: 'rings', icon: Rings, label: 'Rings' },
+  { name: 'heart', icon: Heart, label: 'Heart' },
+  { name: 'calendar', icon: Calendar, label: 'Calendar' },
+  { name: 'map-pin', icon: MapPin, label: 'Map Pin' },
+  { name: 'shirt', icon: Shirt, label: 'Shirt' },
+  { name: 'car', icon: Car, label: 'Car' },
+  { name: 'hotel', icon: Hotel, label: 'Hotel' },
+  { name: 'cake', icon: Cake, label: 'Cake' },
+  { name: 'music', icon: Music, label: 'Music' },
+  { name: 'utensils-crossed', icon: UtensilsCrossed, label: 'Utensils' },
+  { name: 'clock', icon: Clock, label: 'Clock' },
+  { name: 'gift', icon: Gift, label: 'Gift' },
+  { name: 'camera', icon: Camera, label: 'Camera' },
+  { name: 'users', icon: Users, label: 'Users' },
+  { name: 'home', icon: Home, label: 'Home' },
+  { name: 'navigation', icon: Navigation, label: 'Navigation' },
+  { name: 'building-2', icon: Building2, label: 'Building' },
+  { name: 'car-front', icon: CarFront, label: 'Car Front' },
+  { name: 'parking-circle', icon: ParkingCircle, label: 'Parking' },
+  { name: 'bed-double', icon: BedDouble, label: 'Bed' },
+  { name: 'wifi', icon: Wifi, label: 'WiFi' },
+  { name: 'phone', icon: Phone, label: 'Phone' },
+  { name: 'mail', icon: Mail, label: 'Mail' },
+  { name: 'globe', icon: Globe, label: 'Globe' },
+  { name: 'star', icon: Star, label: 'Star' },
+  { name: 'sparkles', icon: Sparkles, label: 'Sparkles' },
+  { name: 'flower-2', icon: Flower2, label: 'Flower' },
+  { name: 'leaf', icon: Leaf, label: 'Leaf' },
+  { name: 'sun', icon: Sun, label: 'Sun' },
+  { name: 'moon', icon: Moon, label: 'Moon' },
+]
 
 const InfoTab = () => {
   const [sections, setSections] = useState([])
@@ -117,8 +157,11 @@ const SectionForm = ({ section, onClose, onSave }) => {
     icon: section?.icon || '',
     section_type: section?.section_type || 'ceremony',
     map_embed_url: section?.map_embed_url || '',
+    image_url: section?.image_url || '',
+    additional_info: section?.additional_info || '',
   })
   const [saving, setSaving] = useState(false)
+  const [showIconPicker, setShowIconPicker] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -173,20 +216,134 @@ const SectionForm = ({ section, onClose, onSave }) => {
           rows="3"
           className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
         />
-        <input
-          type="text"
-          placeholder="Icon name (optional)"
-          value={formData.icon}
-          onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-          className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
-        />
-        <input
-          type="text"
-          placeholder="Google Maps embed URL (optional)"
-          value={formData.map_embed_url}
-          onChange={(e) => setFormData({ ...formData, map_embed_url: e.target.value })}
-          className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
-        />
+        <div>
+          <label className="block text-dusty-rose font-body font-medium mb-2">
+            Image URL (optional)
+          </label>
+          <input
+            type="url"
+            placeholder="https://..."
+            value={formData.image_url || ''}
+            onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+            className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
+          />
+        </div>
+        <div>
+          <label className="block text-dusty-rose font-body font-medium mb-2">
+            Additional Information (optional - shown in modal)
+          </label>
+          <textarea
+            placeholder="Extra details, directions, contact info, etc."
+            value={formData.additional_info || ''}
+            onChange={(e) => setFormData({ ...formData, additional_info: e.target.value })}
+            rows="4"
+            className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
+          />
+        </div>
+        <div>
+          <label className="block text-dusty-rose font-body font-medium mb-2">
+            Icon (optional)
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Icon name (e.g., rings, heart, calendar)"
+              value={formData.icon}
+              onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+              className="flex-1 px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
+            />
+            <button
+              type="button"
+              onClick={() => setShowIconPicker(!showIconPicker)}
+              className="px-4 py-2 bg-gold/20 text-gold rounded-lg hover:bg-gold/30 transition-colors border border-gold/30"
+            >
+              {showIconPicker ? 'Hide' : 'Browse Icons'}
+            </button>
+          </div>
+          
+          {/* Icon Preview */}
+          {formData.icon && (() => {
+            const selectedIconData = availableIcons.find(i => i.name === formData.icon)
+            const SelectedIcon = selectedIconData?.icon
+            return SelectedIcon ? (
+              <div className="mt-2 flex items-center gap-2 text-sm text-dusty-rose/70">
+                <span>Preview:</span>
+                <div className="p-2 bg-white rounded-lg border border-gold/30">
+                  <SelectedIcon size={24} className="text-gold" />
+                </div>
+                <span className="text-dusty-rose/60">({selectedIconData.label})</span>
+              </div>
+            ) : (
+              <div className="mt-2 text-sm text-amber-600">
+                Icon "{formData.icon}" not found. Use the icon picker below to select one.
+              </div>
+            )
+          })()}
+
+          {/* Icon Picker Grid */}
+          {showIconPicker && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-4 p-4 bg-white rounded-lg border border-gold/30 max-h-96 overflow-y-auto"
+            >
+              <p className="text-sm text-dusty-rose/70 mb-3 font-medium">Click an icon to select it:</p>
+              <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-3">
+                {availableIcons.map(({ name, icon: Icon, label }) => (
+                  <motion.button
+                    key={name}
+                    type="button"
+                    onClick={() => {
+                      setFormData({ ...formData, icon: name })
+                      setShowIconPicker(false)
+                    }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`p-3 rounded-lg border-2 transition-all ${
+                      formData.icon === name
+                        ? 'border-gold bg-gold/20'
+                        : 'border-gold/20 bg-champagne/30 hover:border-gold/50'
+                    }`}
+                    title={label}
+                  >
+                    <Icon 
+                      size={24} 
+                      className={`${
+                        formData.icon === name ? 'text-gold' : 'text-dusty-rose/70'
+                      }`} 
+                    />
+                  </motion.button>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setFormData({ ...formData, icon: '' })
+                  setShowIconPicker(false)
+                }}
+                className="mt-3 text-sm text-dusty-rose/60 hover:text-dusty-rose underline"
+              >
+                Clear icon selection
+              </button>
+            </motion.div>
+          )}
+        </div>
+        <div>
+          <label className="block text-dusty-rose font-body font-medium mb-2">
+            Google Maps Embed URL (optional)
+          </label>
+          <input
+            type="text"
+            placeholder="Paste the full iframe src URL here"
+            value={formData.map_embed_url}
+            onChange={(e) => setFormData({ ...formData, map_embed_url: e.target.value })}
+            className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
+          />
+          <p className="text-xs text-dusty-rose/60 mt-1">
+            Tip: In Google Maps, click "Share" → "Embed a map" → Copy the src URL from the iframe
+          </p>
+        </div>
         <div className="flex gap-2">
           <button
             type="submit"

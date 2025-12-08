@@ -1,10 +1,50 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import InfoCard from '../components/InfoCard'
+import InfoCard, { InfoModal } from '../components/InfoCard'
 import { getInfoSections } from '../services/content'
-import { Calendar, MapPin, Shirt, Car, Hotel } from 'lucide-react'
+import {
+  Calendar, MapPin, Shirt, Car, Hotel, Heart, Rings, Cake, Music,
+  UtensilsCrossed, Clock, Gift, Camera, Users, Home, Navigation,
+  Building2, CarFront, ParkingCircle, BedDouble, Wifi, Phone,
+  Mail, Globe, Star, Sparkles, Flower2, Leaf, Sun, Moon, X
+} from 'lucide-react'
 
-const iconMap = {
+// Map icon names to Lucide React icons
+const iconNameMap = {
+  'rings': Rings,
+  'heart': Heart,
+  'calendar': Calendar,
+  'map-pin': MapPin,
+  'shirt': Shirt,
+  'car': Car,
+  'hotel': Hotel,
+  'cake': Cake,
+  'music': Music,
+  'utensils-crossed': UtensilsCrossed,
+  'clock': Clock,
+  'gift': Gift,
+  'camera': Camera,
+  'users': Users,
+  'home': Home,
+  'navigation': Navigation,
+  'building-2': Building2,
+  'car-front': CarFront,
+  'parking-circle': ParkingCircle,
+  'bed-double': BedDouble,
+  'wifi': Wifi,
+  'phone': Phone,
+  'mail': Mail,
+  'globe': Globe,
+  'star': Star,
+  'sparkles': Sparkles,
+  'flower-2': Flower2,
+  'leaf': Leaf,
+  'sun': Sun,
+  'moon': Moon,
+}
+
+// Fallback icon map based on section type
+const sectionTypeIconMap = {
   ceremony: Calendar,
   reception: Calendar,
   dress_code: Shirt,
@@ -15,6 +55,7 @@ const iconMap = {
 const InfoPage = () => {
   const [sections, setSections] = useState([])
   const [loading, setLoading] = useState(true)
+  const [selectedSection, setSelectedSection] = useState(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +75,12 @@ const InfoPage = () => {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>
   }
 
-  const mapSection = sections.find((s) => s.section_type === 'ceremony' && s.map_embed_url)
+  const handleCardClick = (section) => {
+    const hasDetails = section.map_embed_url || section.image_url || section.additional_info
+    if (hasDetails) {
+      setSelectedSection(section)
+    }
+  }
 
   return (
     <div className="min-h-screen pt-20 pb-20">
@@ -54,33 +100,44 @@ const InfoPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           {sections.map((section) => {
-            const Icon = iconMap[section.section_type] || MapPin
+            // Use custom icon if provided, otherwise fallback to section type icon
+            let Icon = MapPin
+            if (section.icon && iconNameMap[section.icon]) {
+              Icon = iconNameMap[section.icon]
+            } else if (sectionTypeIconMap[section.section_type]) {
+              Icon = sectionTypeIconMap[section.section_type]
+            }
             return (
               <InfoCard
                 key={section.id}
                 icon={Icon}
                 title={section.title}
                 description={section.description}
+                section={section}
+                onClick={() => handleCardClick(section)}
               />
             )
           })}
         </div>
-
-        {mapSection && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mt-16 rounded-2xl overflow-hidden border border-gold/30 shadow-lg"
-          >
-            <div
-              className="w-full h-96"
-              dangerouslySetInnerHTML={{ __html: mapSection.map_embed_url }}
-            />
-          </motion.div>
-        )}
       </div>
+
+      {/* Info Modal */}
+      {selectedSection && (() => {
+        let Icon = MapPin
+        if (selectedSection.icon && iconNameMap[selectedSection.icon]) {
+          Icon = iconNameMap[selectedSection.icon]
+        } else if (sectionTypeIconMap[selectedSection.section_type]) {
+          Icon = sectionTypeIconMap[selectedSection.section_type]
+        }
+        return (
+          <InfoModal
+            section={selectedSection}
+            icon={Icon}
+            isOpen={!!selectedSection}
+            onClose={() => setSelectedSection(null)}
+          />
+        )
+      })()}
     </div>
   )
 }

@@ -8,6 +8,8 @@ class WeddingInfoSectionBase(BaseModel):
     icon: Optional[str] = None
     section_type: str
     map_embed_url: Optional[str] = None
+    image_url: Optional[str] = None
+    additional_info: Optional[str] = None
 
 
 class WeddingInfoSectionCreate(WeddingInfoSectionBase):
@@ -20,6 +22,8 @@ class WeddingInfoSectionUpdate(BaseModel):
     icon: Optional[str] = None
     section_type: Optional[str] = None
     map_embed_url: Optional[str] = None
+    image_url: Optional[str] = None
+    additional_info: Optional[str] = None
 
 
 class WeddingInfoSection(WeddingInfoSectionBase):
