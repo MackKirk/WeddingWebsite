@@ -101,7 +101,7 @@ export const InfoModal = ({ section, isOpen, onClose, icon: Icon }) => {
           {/* Content */}
           <div className="p-8 space-y-6">
             {/* Image */}
-            {section.image_url && (
+            {section.image_url ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -112,10 +112,18 @@ export const InfoModal = ({ section, isOpen, onClose, icon: Icon }) => {
                   alt={section.title}
                   className="w-full h-64 md:h-96 object-cover"
                   onError={(e) => {
-                    console.error('Image failed to load:', section.image_url)
+                    console.error('Image failed to load:', section.image_url, 'Normalized URL:', normalizeImageUrl(section.image_url))
+                    e.target.style.display = 'none'
+                  }}
+                  onLoad={() => {
+                    console.log('Image loaded successfully:', section.image_url)
                   }}
                 />
               </motion.div>
+            ) : (
+              <div className="text-center py-8 text-dusty-rose/60 font-body">
+                No image available for this section
+              </div>
             )}
 
             {/* Description */}

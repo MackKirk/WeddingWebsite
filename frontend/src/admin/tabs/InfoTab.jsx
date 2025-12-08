@@ -210,12 +210,15 @@ const SectionForm = ({ section, onClose, onSave }) => {
     setUploadProgress('Starting upload...')
     
     try {
+      let uploadedImageUrl = formData.image_url
+      
       // If file is selected, upload it first
       if (file) {
         setUploading(true)
         try {
           const response = await uploadFile(file)
-          setFormData({ ...formData, image_url: response.data.url })
+          uploadedImageUrl = response.data.url
+          setFormData({ ...formData, image_url: uploadedImageUrl })
           setUploadProgress('Upload completed successfully!')
         } catch (error) {
           console.error('Error uploading image:', error)
@@ -232,19 +235,30 @@ const SectionForm = ({ section, onClose, onSave }) => {
       // Convert empty strings to null for optional fields
       const dataToSend = {
         ...formData,
+        image_url: uploadedImageUrl || null, // Use the uploaded URL directly
         description: formData.description || null,
         icon: formData.icon || null,
         map_embed_url: formData.map_embed_url || null,
-        image_url: formData.image_url || null,
         additional_info: formData.additional_info || null,
       }
 
+      console.log('Saving info section with data:', dataToSend) // Debug log
+
       if (section) {
-        await updateInfoSection(section.id, dataToSend)
+        const updated = await updateInfoSection(section.id, dataToSend)
+        console.log('Updated section:', updated) // Debug log
       } else {
-        await createInfoSection(dataToSend)
+        const created = await createInfoSection(dataToSend)
+        console.log('Created section:', created) // Debug log
       }
-      onSave()
+      
+      // Reset form state
+      setFile(null)
+      setPreview(null)
+      setImageInfo(null)
+      setUploadProgress(null)
+      
+      onSave() // This should refresh the data
       onClose()
     } catch (error) {
       console.error('Error saving section:', error)
