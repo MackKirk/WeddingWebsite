@@ -42,18 +42,18 @@ def seed_demo_data(
         # 2. Story Sections
         story_sections_data = [
             {
-                "title": "Como nos conhecemos",
-                "content": "Nos conhecemos em uma bela tarde de primavera, quando o destino nos uniu em um café aconchegante. Desde o primeiro olhar, soubemos que algo especial estava começando.",
+                "title": "How We Met",
+                "content": "We met on a beautiful spring afternoon in Pitt Meadows, when fate brought us together at a cozy café. From the first glance, we knew something special was beginning.",
                 "order": 0
             },
             {
-                "title": "O pedido",
-                "content": "Em uma noite estrelada, sob o céu mais lindo que já vimos, Joel se ajoelhou e pediu minha mão em casamento. Foi o momento mais mágico das nossas vidas.",
+                "title": "The Proposal",
+                "content": "On a starry night, under the most beautiful sky we had ever seen, Joel got down on one knee and asked for my hand in marriage. It was the most magical moment of our lives.",
                 "order": 1
             },
             {
-                "title": "Nossa jornada",
-                "content": "Juntos, construímos sonhos, compartilhamos risos e superamos desafios. Cada dia ao seu lado é uma nova aventura, e não podemos esperar para começar esta nova fase juntos.",
+                "title": "Our Journey",
+                "content": "Together, we've built dreams, shared laughter, and overcome challenges. Every day by your side is a new adventure, and we can't wait to start this new chapter together in Pitt Meadows, Canada.",
                 "order": 2
             }
         ]
@@ -69,17 +69,17 @@ def seed_demo_data(
         story_images_data = [
             {
                 "image_url": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80",
-                "caption": "Nosso primeiro encontro",
+                "caption": "Our first date",
                 "order": 0
             },
             {
                 "image_url": "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
-                "caption": "Momentos especiais",
+                "caption": "Special moments",
                 "order": 1
             },
             {
                 "image_url": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&q=80",
-                "caption": "Aventuras juntos",
+                "caption": "Adventures together",
                 "order": 2
             }
         ]
@@ -94,34 +94,34 @@ def seed_demo_data(
         # 4. Wedding Info Sections
         info_sections_data = [
             {
-                "title": "Cerimônia",
-                "description": "Nossa cerimônia será realizada em uma capela histórica, cercada pela natureza. Será um momento íntimo e especial para celebrar nosso amor.",
+                "title": "Ceremony",
+                "description": "Our ceremony will be held at a historic chapel in Pitt Meadows, surrounded by nature. It will be an intimate and special moment to celebrate our love.",
                 "icon": "rings",
                 "section_type": "ceremony",
-                "map_embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.1973534208!2d-46.633331!3d-23.5505199!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDMzJzAxLjkiUyA0NsKwMzcnNTkuOSJX!5e0!3m2!1spt-BR!2sbr!4v1234567890"
+                "map_embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2595.5!2d-122.689722!3d49.221389!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x548675b8b8b8b8b8%3A0x1234567890abcdef!2sPitt%20Meadows%2C%20BC%2C%20Canada!5e0!3m2!1sen!2sca!4v1234567890"
             },
             {
-                "title": "Recepção",
-                "description": "Após a cerimônia, vamos celebrar com música, dança e muita alegria! A recepção será em um salão elegante com vista para os jardins.",
+                "title": "Reception",
+                "description": "After the ceremony, we'll celebrate with music, dancing, and lots of joy! The reception will be held in an elegant hall with garden views in Pitt Meadows.",
                 "icon": "champagne",
                 "section_type": "reception",
-                "map_embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.1973534208!2d-46.633331!3d-23.5505199!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDMzJzAxLjkiUyA0NsKwMzcnNTkuOSJX!5e0!3m2!1spt-BR!2sbr!4v1234567890"
+                "map_embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2595.5!2d-122.689722!3d49.221389!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x548675b8b8b8b8b8%3A0x1234567890abcdef!2sPitt%20Meadows%2C%20BC%2C%20Canada!5e0!3m2!1sen!2sca!4v1234567890"
             },
             {
                 "title": "Dress Code",
-                "description": "Pedimos que nossos convidados venham elegantemente vestidos. Cores suaves e tons pastéis são bem-vindos!",
+                "description": "We kindly ask our guests to dress elegantly. Soft colors and pastel tones are welcome!",
                 "icon": "dress",
                 "section_type": "dress_code"
             },
             {
-                "title": "Estacionamento",
-                "description": "Há estacionamento disponível no local. Por favor, chegue com alguns minutos de antecedência.",
+                "title": "Parking",
+                "description": "Parking is available on-site. Please arrive a few minutes early.",
                 "icon": "car",
                 "section_type": "parking"
             },
             {
-                "title": "Hospedagem",
-                "description": "Para convidados de fora da cidade, recomendamos os seguintes hotéis próximos ao local do evento.",
+                "title": "Accommodation",
+                "description": "For out-of-town guests, we recommend the following hotels near the event venue.",
                 "icon": "hotel",
                 "section_type": "hotel"
             }
@@ -138,36 +138,36 @@ def seed_demo_data(
         timeline_events_data = [
             {
                 "time": time(15, 0),
-                "title": "Cerimônia",
-                "description": "Cerimônia de casamento na capela",
+                "title": "Ceremony",
+                "description": "Wedding ceremony at the chapel",
                 "icon": "rings",
                 "order": 0
             },
             {
                 "time": time(16, 0),
-                "title": "Cocktail",
-                "description": "Cocktail de boas-vindas com aperitivos",
+                "title": "Cocktail Hour",
+                "description": "Welcome cocktail with appetizers",
                 "icon": "cocktail",
                 "order": 1
             },
             {
                 "time": time(17, 30),
-                "title": "Jantar",
-                "description": "Jantar servido no salão principal",
+                "title": "Dinner",
+                "description": "Dinner served in the main hall",
                 "icon": "dinner",
                 "order": 2
             },
             {
                 "time": time(19, 0),
-                "title": "Bolo e Brinde",
-                "description": "Corte do bolo e brinde aos noivos",
+                "title": "Cake & Toast",
+                "description": "Cake cutting and toast to the newlyweds",
                 "icon": "cake",
                 "order": 3
             },
             {
                 "time": time(20, 0),
-                "title": "Festa",
-                "description": "Pista de dança aberta! Vamos celebrar até tarde!",
+                "title": "Reception Party",
+                "description": "Dance floor is open! Let's celebrate until late!",
                 "icon": "music",
                 "order": 4
             }
@@ -185,32 +185,32 @@ def seed_demo_data(
         gallery_images_data = [
             {
                 "image_url": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80",
-                "caption": "Ensaio fotográfico - Look 1",
+                "caption": "Engagement photoshoot - Look 1",
                 "order": 0
             },
             {
                 "image_url": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&q=80",
-                "caption": "Ensaio fotográfico - Look 2",
+                "caption": "Engagement photoshoot - Look 2",
                 "order": 1
             },
             {
                 "image_url": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&q=80",
-                "caption": "Ensaio fotográfico - Look 3",
+                "caption": "Engagement photoshoot - Look 3",
                 "order": 2
             },
             {
                 "image_url": "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=1200&q=80",
-                "caption": "Preparativos",
+                "caption": "Preparations",
                 "order": 3
             },
             {
                 "image_url": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80",
-                "caption": "Momentos especiais",
+                "caption": "Special moments",
                 "order": 4
             },
             {
                 "image_url": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&q=80",
-                "caption": "Celebração",
+                "caption": "Celebration",
                 "order": 5
             }
         ]
@@ -225,32 +225,32 @@ def seed_demo_data(
         # 7. Gift Items
         gift_items_data = [
             {
-                "title": "Lista de Presentes - Magazine Luiza",
-                "description": "Acesse nossa lista de presentes na Magazine Luiza",
-                "link": "https://www.magazineluiza.com.br",
+                "title": "Wedding Registry - The Bay",
+                "description": "Check out our wedding registry at The Bay",
+                "link": "https://www.thebay.com",
                 "image_url": "https://images.unsplash.com/photo-1607082349566-187342175e2f?w=400&q=80",
                 "item_type": "external",
                 "order": 0
             },
             {
-                "title": "Lista de Presentes - Amazon",
-                "description": "Confira nossa lista de presentes na Amazon",
-                "link": "https://www.amazon.com.br",
+                "title": "Wedding Registry - Amazon",
+                "description": "Browse our wedding registry on Amazon",
+                "link": "https://www.amazon.ca",
                 "image_url": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&q=80",
                 "item_type": "external",
                 "order": 1
             },
             {
-                "title": "Pix para Lua de Mel",
-                "description": "Ajude-nos a realizar nossa lua de mel dos sonhos",
+                "title": "Honeymoon Fund",
+                "description": "Help us make our dream honeymoon come true",
                 "link": "",
                 "image_url": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80",
                 "item_type": "card",
                 "order": 2
             },
             {
-                "title": "Pix para Casa Nova",
-                "description": "Contribua para nossa nova casa",
+                "title": "New Home Fund",
+                "description": "Contribute to our new home",
                 "link": "",
                 "image_url": "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&q=80",
                 "item_type": "card",
@@ -268,7 +268,7 @@ def seed_demo_data(
         db.commit()
         
         return {
-            "message": "Dados de exemplo adicionados com sucesso!",
+            "message": "Demo content added successfully!",
             "added": {
                 "home_content": 1,
                 "story_sections": len(story_sections_data),
@@ -281,7 +281,7 @@ def seed_demo_data(
         }
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Erro ao adicionar dados de exemplo: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error adding demo content: {str(e)}")
 
 
 @router.delete("/demo")
@@ -323,10 +323,10 @@ def clear_demo_data(
         db.commit()
         
         return {
-            "message": "Conteúdo de exemplo removido com sucesso!",
+            "message": "Demo content removed successfully!",
             "deleted_items": deleted_count
         }
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Erro ao remover dados de exemplo: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error removing demo content: {str(e)}")
 

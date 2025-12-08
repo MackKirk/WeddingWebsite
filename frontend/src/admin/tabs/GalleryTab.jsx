@@ -67,8 +67,8 @@ const GalleryTab = () => {
         <div>
           <h2 className="text-4xl font-display text-dusty-rose tracking-wide mb-2">Gallery Images</h2>
           <p className="text-sm text-dusty-rose/70 font-body">
-            <span className="font-semibold">Tamanho recomendado:</span> 1920x1080px (16:9) ou 1200x1200px (quadrado). 
-            Máximo 5MB por imagem. As imagens serão enviadas para Azure Blob Storage.
+            <span className="font-semibold">Recommended size:</span> 1920x1080px (16:9) or 1200x1200px (square). 
+            Maximum 5MB per image. Images will be uploaded to Azure Blob Storage.
           </p>
         </div>
         <button
@@ -110,7 +110,7 @@ const GalleryTab = () => {
               <button
                 onClick={() => handleDelete(image.id)}
                 className="absolute top-2 right-2 bg-red-500/90 hover:bg-red-600 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                title="Deletar imagem"
+                title="Delete image"
               >
                 <Trash2 size={16} />
               </button>
@@ -164,7 +164,7 @@ const ImageForm = ({ onClose, onSave, onUpload, uploading }) => {
     // Validar tamanho (5MB)
     const maxSize = 5 * 1024 * 1024 // 5MB
     if (selectedFile.size > maxSize) {
-      alert('A imagem é muito grande. Por favor, use uma imagem menor que 5MB.')
+      alert('The image is too large. Please use an image smaller than 5MB.')
       return
     }
 
@@ -195,11 +195,11 @@ const ImageForm = ({ onClose, onSave, onUpload, uploading }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
-    setUploadProgress('Iniciando upload para Azure Blob Storage...')
+    setUploadProgress('Starting upload to Azure Blob Storage...')
     try {
       if (file) {
         await onUpload(file)
-        setUploadProgress('Upload concluído com sucesso!')
+        setUploadProgress('Upload completed successfully!')
       } else {
         await createGalleryImage(formData)
         onSave()
@@ -207,8 +207,8 @@ const ImageForm = ({ onClose, onSave, onUpload, uploading }) => {
       }
     } catch (error) {
       console.error('Error saving image:', error)
-      setUploadProgress('Erro ao fazer upload. Tente novamente.')
-      alert('Erro ao fazer upload da imagem')
+      setUploadProgress('Error uploading. Please try again.')
+      alert('Error uploading image')
     } finally {
       setSaving(false)
       setTimeout(() => setUploadProgress(null), 3000)
@@ -226,10 +226,10 @@ const ImageForm = ({ onClose, onSave, onUpload, uploading }) => {
           <label className="block text-dusty-rose font-body font-medium mb-2">
             <div className="flex items-center gap-2">
               <Upload size={18} />
-              Upload Image para Azure Blob Storage
+              Upload Image to Azure Blob Storage
             </div>
             <span className="text-xs text-dusty-rose/60 font-normal block mt-1">
-              Formatos: JPG, PNG, GIF, WEBP. Máximo 5MB.
+              Formats: JPG, PNG, GIF, WEBP. Maximum 5MB.
             </span>
           </label>
           <input
@@ -251,14 +251,14 @@ const ImageForm = ({ onClose, onSave, onUpload, uploading }) => {
                   />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-dusty-rose mb-2">Informações da Imagem</h4>
+                  <h4 className="font-semibold text-dusty-rose mb-2">Image Information</h4>
                   <div className="space-y-1 text-sm text-dusty-rose/80">
                     <div className="flex items-center gap-2">
                       <ImageIcon size={14} />
-                      <span><strong>Nome:</strong> {imageInfo.fileName}</span>
+                      <span><strong>Name:</strong> {imageInfo.fileName}</span>
                     </div>
                     <div>
-                      <strong>Dimensões:</strong> {imageInfo.width} × {imageInfo.height}px
+                      <strong>Dimensions:</strong> {imageInfo.width} × {imageInfo.height}px
                       {imageInfo.width >= 1920 && imageInfo.height >= 1080 && (
                         <span className="ml-2 text-green-600 flex items-center gap-1">
                           <CheckCircle2 size={12} />
@@ -268,26 +268,26 @@ const ImageForm = ({ onClose, onSave, onUpload, uploading }) => {
                       {(imageInfo.width < 1200 || imageInfo.height < 1200) && (
                         <span className="ml-2 text-amber-600 flex items-center gap-1">
                           <AlertCircle size={12} />
-                          Pode ficar pixelada
+                          May appear pixelated
                         </span>
                       )}
                     </div>
                     <div>
-                      <strong>Tamanho:</strong> {imageInfo.size} MB
+                      <strong>Size:</strong> {imageInfo.size} MB
                       {parseFloat(imageInfo.size) > 3 && (
                         <span className="ml-2 text-amber-600 flex items-center gap-1">
                           <AlertCircle size={12} />
-                          Grande (pode demorar)
+                          Large (may take time)
                         </span>
                       )}
                     </div>
                     <div>
-                      <strong>Proporção:</strong> {imageInfo.aspectRatio}:1
+                      <strong>Aspect Ratio:</strong> {imageInfo.aspectRatio}:1
                       {Math.abs(parseFloat(imageInfo.aspectRatio) - 1.78) < 0.1 && (
-                        <span className="ml-2 text-green-600">(16:9 - Recomendado)</span>
+                        <span className="ml-2 text-green-600">(16:9 - Recommended)</span>
                       )}
                       {Math.abs(parseFloat(imageInfo.aspectRatio) - 1) < 0.1 && (
-                        <span className="ml-2 text-green-600">(Quadrado - Recomendado)</span>
+                        <span className="ml-2 text-green-600">(Square - Recommended)</span>
                       )}
                     </div>
                   </div>
@@ -299,12 +299,12 @@ const ImageForm = ({ onClose, onSave, onUpload, uploading }) => {
           {/* Status do upload */}
           {uploadProgress && (
             <div className={`mt-3 p-3 rounded-lg ${
-              uploadProgress.includes('Erro') 
+              uploadProgress.includes('Error') 
                 ? 'bg-red-50 border border-red-200 text-red-700' 
                 : 'bg-green-50 border border-green-200 text-green-700'
             }`}>
               <div className="flex items-center gap-2">
-                {uploadProgress.includes('Erro') ? (
+                {uploadProgress.includes('Error') ? (
                   <AlertCircle size={16} />
                 ) : (
                   <CheckCircle2 size={16} />
@@ -319,7 +319,7 @@ const ImageForm = ({ onClose, onSave, onUpload, uploading }) => {
 
         <div>
           <label className="block text-dusty-rose font-body font-medium mb-2">
-            URL da Imagem (se já estiver hospedada)
+            Image URL (if already hosted)
           </label>
           <input
             type="url"
@@ -332,11 +332,11 @@ const ImageForm = ({ onClose, onSave, onUpload, uploading }) => {
 
         <div>
           <label className="block text-dusty-rose font-body font-medium mb-2">
-            Legenda (opcional)
+            Caption (optional)
           </label>
           <input
             type="text"
-            placeholder="Descrição da imagem..."
+            placeholder="Image description..."
             value={formData.caption}
             onChange={(e) => setFormData({ ...formData, caption: e.target.value })}
             className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
@@ -352,12 +352,12 @@ const ImageForm = ({ onClose, onSave, onUpload, uploading }) => {
             {uploading ? (
               <>
                 <Upload size={18} className="animate-pulse" />
-                Enviando para Azure...
+                Uploading to Azure...
               </>
             ) : (
               <>
                 <Save size={18} />
-                Salvar
+                Save
               </>
             )}
           </button>
@@ -373,7 +373,7 @@ const ImageForm = ({ onClose, onSave, onUpload, uploading }) => {
             className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
           >
             <X size={18} />
-            Cancelar
+            Cancel
           </button>
         </div>
       </form>

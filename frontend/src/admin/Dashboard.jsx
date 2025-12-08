@@ -46,37 +46,37 @@ const Dashboard = () => {
   }
 
   const handleSeedDemo = async () => {
-    if (!confirm('Deseja adicionar conteúdo de exemplo? Isso adicionará dados de demonstração em todas as seções.')) {
+    if (!confirm('Would you like to add demo content? This will add demonstration data to all sections.')) {
       return
     }
     setSeedLoading(true)
     try {
       const response = await seedDemoData()
-      alert('Conteúdo de exemplo adicionado com sucesso!')
-      window.location.reload() // Recarregar para ver as mudanças
+      alert('Demo content added successfully!')
+      window.location.reload() // Reload to see changes
     } catch (error) {
       console.error('Error seeding demo data:', error)
-      alert('Erro ao adicionar conteúdo de exemplo')
+      alert('Error adding demo content')
     } finally {
       setSeedLoading(false)
     }
   }
 
   const handleClearDemo = async () => {
-    if (!confirm('ATENÇÃO: Isso irá remover TODO o conteúdo (exceto usuários admin). Tem certeza?')) {
+    if (!confirm('WARNING: This will remove ALL content (except admin users). Are you sure?')) {
       return
     }
-    if (!confirm('Esta ação não pode ser desfeita. Continuar?')) {
+    if (!confirm('This action cannot be undone. Continue?')) {
       return
     }
     setClearLoading(true)
     try {
       const response = await clearDemoData()
-      alert('Conteúdo removido com sucesso!')
-      window.location.reload() // Recarregar para ver as mudanças
+      alert('Content removed successfully!')
+      window.location.reload() // Reload to see changes
     } catch (error) {
       console.error('Error clearing demo data:', error)
-      alert('Erro ao remover conteúdo')
+      alert('Error removing content')
     } finally {
       setClearLoading(false)
     }
@@ -108,7 +108,7 @@ const Dashboard = () => {
             className="w-full flex items-center gap-2 px-4 py-2 bg-green-500/10 text-green-700 rounded-lg hover:bg-green-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
           >
             <Sparkles size={16} />
-            <span>Adicionar Conteúdo de Exemplo</span>
+            <span>Add Demo Content</span>
           </motion.button>
           <motion.button
             onClick={handleClearDemo}
@@ -118,10 +118,10 @@ const Dashboard = () => {
             className="w-full flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-700 rounded-lg hover:bg-red-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
           >
             <Trash2 size={16} />
-            <span>Limpar Todo Conteúdo</span>
+            <span>Clear All Content</span>
           </motion.button>
           <p className="text-xs text-dusty-rose/50 text-center mt-2">
-            Use para ver como o site ficaria
+            Use to preview how the site will look
           </p>
         </div>
 
