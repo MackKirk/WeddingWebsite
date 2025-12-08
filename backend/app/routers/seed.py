@@ -91,39 +91,49 @@ def seed_demo_data(
             if not existing:
                 db.add(StoryImage(**img_data))
 
-        # 4. Wedding Info Sections
+        # 4. Wedding Info Sections (with new fields: image_url and additional_info)
         info_sections_data = [
             {
                 "title": "Ceremony",
-                "description": "Our ceremony will be held at a historic chapel in Pitt Meadows, surrounded by nature. It will be an intimate and special moment to celebrate our love.",
+                "description": "Our ceremony will be held at a beautiful venue in Pitt Meadows, BC, surrounded by scenic landscapes. It will be an intimate and special moment to celebrate our love.",
                 "icon": "rings",
                 "section_type": "ceremony",
-                "map_embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2595.5!2d-122.689722!3d49.221389!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x548675b8b8b8b8b8%3A0x1234567890abcdef!2sPitt%20Meadows%2C%20BC%2C%20Canada!5e0!3m2!1sen!2sca!4v1234567890"
+                "map_embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2595.5!2d-122.689722!3d49.221389!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x548675b8b8b8b8b8%3A0x1234567890abcdef!2sPitt%20Meadows%2C%20BC%2C%20Canada!5e0!3m2!1sen!2sca!4v1234567890",
+                "image_url": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80",
+                "additional_info": "The ceremony will be followed by a short cocktail hour at the same location. Please arrive 15 minutes early. We kindly request that guests maintain a quiet and respectful atmosphere during the ceremony."
             },
             {
                 "title": "Reception",
-                "description": "After the ceremony, we'll celebrate with music, dancing, and lots of joy! The reception will be held in an elegant hall with garden views in Pitt Meadows.",
-                "icon": "champagne",
+                "description": "After the ceremony, we'll celebrate with music, dancing, and lots of joy! The reception will be held in an elegant hall with stunning views of the Pitt Meadows countryside.",
+                "icon": "heart",
                 "section_type": "reception",
-                "map_embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2595.5!2d-122.689722!3d49.221389!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x548675b8b8b8b8b8%3A0x1234567890abcdef!2sPitt%20Meadows%2C%20BC%2C%20Canada!5e0!3m2!1sen!2sca!4v1234567890"
+                "map_embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2595.5!2d-122.689722!3d49.221389!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x548675b8b8b8b8b8%3A0x1234567890abcdef!2sPitt%20Meadows%2C%20BC%2C%20Canada!5e0!3m2!1sen!2sca!4v1234567890",
+                "image_url": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&q=80",
+                "additional_info": "Enjoy a delicious dinner, heartfelt speeches, and dance the night away with us! The reception includes a three-course meal with vegetarian and gluten-free options available. Please let us know about any dietary restrictions when you RSVP."
             },
             {
                 "title": "Dress Code",
-                "description": "We kindly ask our guests to dress elegantly. Soft colors and pastel tones are welcome!",
-                "icon": "dress",
-                "section_type": "dress_code"
+                "description": "We kindly ask our guests to dress elegantly. Soft colors and pastel tones are welcome! Think semi-formal or cocktail attire.",
+                "icon": "shirt",
+                "section_type": "dress_code",
+                "image_url": None,
+                "additional_info": "For men: suits or blazers with dress pants. For women: elegant dresses or jumpsuits. Avoid jeans, casual wear, and white (reserved for the bride). Soft pastel colors are encouraged to match our wedding theme!"
             },
             {
                 "title": "Parking",
-                "description": "Parking is available on-site. Please arrive a few minutes early.",
+                "description": "Complimentary parking is available on-site at the venue. Please follow the signs upon arrival. Carpooling is encouraged!",
                 "icon": "car",
-                "section_type": "parking"
+                "section_type": "parking",
+                "image_url": None,
+                "additional_info": "There will be attendants to guide you to available parking spots. Please do not leave valuables in your car. If you plan to drink, we recommend arranging a designated driver or using a ride-sharing service. Parking is free for all guests."
             },
             {
                 "title": "Accommodation",
-                "description": "For out-of-town guests, we recommend the following hotels near the event venue.",
+                "description": "For out-of-town guests, we recommend the following hotels in or near Pitt Meadows, BC. Please book early as rooms fill up quickly!",
                 "icon": "hotel",
-                "section_type": "hotel"
+                "section_type": "hotel",
+                "image_url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80",
+                "additional_info": "Suggested Hotels:\n\n• The Meadowbrook Hotel (Pitt Meadows)\n  Phone: (604) 465-1234\n  Distance: 2 km from venue\n\n• Ramada by Wyndham (Maple Ridge)\n  Phone: (604) 465-5678\n  Distance: 5 km from venue\n\n• Holiday Inn Express (Coquitlam)\n  Phone: (604) 465-9012\n  Distance: 8 km from venue\n\nPlease mention 'Bianca & Joel Wedding' when booking for a potential group discount."
             }
         ]
         
@@ -133,6 +143,10 @@ def seed_demo_data(
             ).first()
             if not existing:
                 db.add(WeddingInfoSection(**info_data))
+            else:
+                # Update existing info sections with new data (including new fields)
+                for key, value in info_data.items():
+                    setattr(existing, key, value)
 
         # 5. Timeline Events
         timeline_events_data = [

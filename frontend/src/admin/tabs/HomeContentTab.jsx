@@ -272,10 +272,18 @@ const HomeContentTab = () => {
                   onError={(e) => {
                     console.error('Current hero image failed to load:', content.hero_image_url, 'Normalized:', normalizeImageUrl(content.hero_image_url))
                     e.target.style.display = 'none'
-                    // Show error message
+                    // Show error message with helpful instructions
                     const errorDiv = document.createElement('div')
-                    errorDiv.className = 'text-center py-8 text-dusty-rose/60 font-body'
-                    errorDiv.textContent = 'Image failed to load. Please check the URL or re-upload.'
+                    errorDiv.className = 'text-center py-4 px-4 bg-amber-50 border border-amber-200 rounded-lg'
+                    errorDiv.innerHTML = `
+                      <p class="text-amber-800 font-semibold mb-2">⚠️ Image failed to load</p>
+                      <p class="text-amber-700 text-sm mb-2">If this is an Azure Blob Storage URL, you may need to enable public access:</p>
+                      <ol class="text-amber-700 text-xs text-left list-decimal list-inside space-y-1">
+                        <li>Go to Azure Portal → Storage Account (mkhubstorage01)</li>
+                        <li>Settings → Configuration → Enable "Allow Blob public access"</li>
+                        <li>Containers → biancaswedding → Change access level → "Blob"</li>
+                      </ol>
+                    `
                     e.target.parentElement.appendChild(errorDiv)
                   }}
                   onLoad={() => {
