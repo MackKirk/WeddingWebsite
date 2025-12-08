@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { getHomeContent, updateHomeContent, uploadFile } from '../../services/content'
 import { motion } from 'framer-motion'
 import { Save, Upload, Image as ImageIcon, CheckCircle2, AlertCircle, X } from 'lucide-react'
+import { normalizeImageUrl } from '../../utils/imageUrl'
 
 const HomeContentTab = () => {
   const [content, setContent] = useState({
@@ -265,11 +266,20 @@ const HomeContentTab = () => {
               <div className="mt-4 p-4 bg-white rounded-lg border border-gold/30">
                 <h4 className="font-semibold text-dusty-rose mb-2">Current Hero Image</h4>
                 <img
-                  src={content.hero_image_url}
+                  src={normalizeImageUrl(content.hero_image_url)}
                   alt="Current hero"
                   className="w-full h-48 object-cover rounded-lg border border-gold/20"
                   onError={(e) => {
-                    console.error('Current hero image failed to load:', content.hero_image_url)
+                    console.error('Current hero image failed to load:', content.hero_image_url, 'Normalized:', normalizeImageUrl(content.hero_image_url))
+                    e.target.style.display = 'none'
+                    // Show error message
+                    const errorDiv = document.createElement('div')
+                    errorDiv.className = 'text-center py-8 text-dusty-rose/60 font-body'
+                    errorDiv.textContent = 'Image failed to load. Please check the URL or re-upload.'
+                    e.target.parentElement.appendChild(errorDiv)
+                  }}
+                  onLoad={() => {
+                    console.log('Current hero image loaded successfully:', content.hero_image_url)
                   }}
                 />
               </div>
