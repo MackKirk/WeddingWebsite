@@ -14,7 +14,10 @@ def get_home_content(db: Session = Depends(get_db)):
     content = db.query(HomeContent).first()
     if not content:
         # Create default content
-        content = HomeContent()
+        content = HomeContent(
+            hero_text="Bianca & Joel",
+            subtitle="Join us for our special day"
+        )
         db.add(content)
         db.commit()
         db.refresh(content)
