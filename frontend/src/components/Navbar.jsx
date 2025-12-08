@@ -41,7 +41,7 @@ const Navbar = () => {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <Link to="/" className="text-2xl font-display text-gold font-semibold">
-              Wedding
+              Bianca & Joel Wedding
             </Link>
 
             {/* Desktop Menu */}
@@ -55,6 +55,11 @@ const Navbar = () => {
                       ? 'text-gold'
                       : 'text-dusty-rose hover:text-gold'
                   }`}
+                  style={{
+                    textShadow: location.pathname === link.path 
+                      ? '-0.5px -0.5px 0 white, 0.5px -0.5px 0 white, -0.5px 0.5px 0 white, 0.5px 0.5px 0 white, 0 0 2px white'
+                      : '-0.5px -0.5px 0 white, 0.5px -0.5px 0 white, -0.5px 0.5px 0 white, 0.5px 0.5px 0 white, 0 0 2px white'
+                  }}
                 >
                   {link.label}
                   {location.pathname === link.path && (
@@ -118,6 +123,9 @@ const Navbar = () => {
                         ? 'text-gold'
                         : 'text-dusty-rose hover:text-gold'
                     }`}
+                    style={{
+                      textShadow: '-0.5px -0.5px 0 white, 0.5px -0.5px 0 white, -0.5px 0.5px 0 white, 0.5px 0.5px 0 white, 0 0 2px white'
+                    }}
                   >
                     {link.label}
                   </Link>
