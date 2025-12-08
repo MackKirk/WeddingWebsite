@@ -32,7 +32,11 @@ def update_home_content(
 ):
     content = db.query(HomeContent).first()
     if not content:
-        content = HomeContent()
+        # Create default content with same defaults as get_home_content
+        content = HomeContent(
+            hero_text="Bianca & Joel",
+            subtitle="Join us for our special day"
+        )
         db.add(content)
     
     update_data = content_update.model_dump(exclude_unset=True)
