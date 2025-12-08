@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { LucideIcon, X, Clock, Rings, Cake, Music, UtensilsCrossed, Heart } from 'lucide-react'
+import { LucideIcon, X, Clock, Heart, Cake, Music, UtensilsCrossed } from 'lucide-react'
 import { normalizeImageUrl } from '../utils/imageUrl'
 
 // Icon mapping for timeline events
 const iconMap = {
-  'rings': Rings,
+  'rings': Heart, // Using Heart as wedding rings icon (Ring doesn't exist in lucide-react)
   'heart': Heart,
   'clock': Clock,
   'cake': Cake,
