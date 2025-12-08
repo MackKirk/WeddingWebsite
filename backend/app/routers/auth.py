@@ -12,7 +12,10 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/login", response_model=Token)
 def login(login_data: LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(AdminUser).filter(AdminUser.username == login_data.username).first()
+    # Comparação case-insensitive do username
+    user = db.query(AdminUser).filter(
+        AdminUser.username.ilike(login_data.username)
+    ).first()
     if not user or not verify_password(login_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -33,7 +36,10 @@ def login_form(
     db: Session = Depends(get_db)
 ):
     """Alternative login endpoint that accepts form data"""
-    user = db.query(AdminUser).filter(AdminUser.username == username).first()
+    # Comparação case-insensitive do username
+    user = db.query(AdminUser).filter(
+        AdminUser.username.ilike(username)
+    ).first()
     if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

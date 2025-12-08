@@ -136,7 +136,7 @@ async def startup_event():
         import traceback
         traceback.print_exc()
     
-    # Criar admin user
+    # Criar/Atualizar admin user
     try:
         from app.core.database import SessionLocal
         if SessionLocal is None:
@@ -150,6 +150,7 @@ async def startup_event():
             try:
                 admin = db.query(AdminUser).filter(AdminUser.username == settings.ADMIN_USERNAME).first()
                 if not admin:
+                    # Criar novo admin
                     admin = AdminUser(
                         username=settings.ADMIN_USERNAME,
                         hashed_password=get_password_hash(settings.ADMIN_PASSWORD)
@@ -158,9 +159,12 @@ async def startup_event():
                     db.commit()
                     print(f"Admin user created: {settings.ADMIN_USERNAME}", file=sys.stdout)
                 else:
-                    print(f"Admin user already exists: {settings.ADMIN_USERNAME}", file=sys.stdout)
+                    # Atualizar senha do admin existente (sempre atualiza para garantir que está sincronizado com env vars)
+                    admin.hashed_password = get_password_hash(settings.ADMIN_PASSWORD)
+                    db.commit()
+                    print(f"Admin user password updated: {settings.ADMIN_USERNAME}", file=sys.stdout)
             except Exception as e:
-                print(f"Warning: Could not create admin user: {e}", file=sys.stderr)
+                print(f"Warning: Could not create/update admin user: {e}", file=sys.stderr)
                 import traceback
                 traceback.print_exc()
             finally:
