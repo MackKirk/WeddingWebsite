@@ -1,5 +1,5 @@
 """Azure Blob Storage integration"""
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, ContentSettings
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, ContentSettings, PublicAccess
 from app.core.config import settings
 import os
 from typing import Optional
@@ -46,12 +46,18 @@ def get_container_client() -> Optional[ContainerClient]:
         container_client = blob_service.get_container_client(
             settings.AZURE_STORAGE_CONTAINER
         )
-        # Create container if it doesn't exist
+        # Create container if it doesn't exist with public blob access
         if not container_client.exists():
-            print(f"Creating Azure Blob Storage container: {settings.AZURE_STORAGE_CONTAINER}", file=sys.stdout)
-            container_client.create_container()
+            print(f"Creating Azure Blob Storage container: {settings.AZURE_STORAGE_CONTAINER} with public blob access", file=sys.stdout)
+            container_client.create_container(public_access=PublicAccess.Blob)
         else:
             print(f"Azure Blob Storage container '{settings.AZURE_STORAGE_CONTAINER}' already exists.", file=sys.stdout)
+            # Try to set public access if container exists but doesn't have it
+            try:
+                container_client.set_container_access_policy(public_access=PublicAccess.Blob)
+                print(f"Set public blob access on existing container.", file=sys.stdout)
+            except Exception as e:
+                print(f"Warning: Could not set public access on container (may need manual configuration): {e}", file=sys.stderr)
         return container_client
     except Exception as e:
         print(f"Error getting container client: {e}", file=sys.stderr)
