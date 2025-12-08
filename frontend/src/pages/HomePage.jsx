@@ -32,6 +32,7 @@ const HomePage = () => {
         heroImageUrl={homeContent?.hero_image_url}
         subtitle={homeContent?.subtitle}
         weddingDate={homeContent?.wedding_date}
+        textColor={homeContent?.text_color}
       />
     </div>
   )

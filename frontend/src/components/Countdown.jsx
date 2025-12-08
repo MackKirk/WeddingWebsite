@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
-const Countdown = ({ weddingDate }) => {
+const Countdown = ({ weddingDate, textColor = '#8B6F6D' }) => {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -91,7 +91,7 @@ const Countdown = ({ weddingDate }) => {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="inline-flex items-center gap-6 md:gap-8 px-10 md:px-12 py-8 md:py-10 bg-gradient-to-br from-champagne/95 via-blush-pink/40 to-champagne/95 backdrop-blur-md rounded-full shadow-xl border border-gold/20"
+      className="inline-flex items-center gap-6 md:gap-8 px-10 md:px-12 py-8 md:py-10 bg-champagne/90 backdrop-blur-md rounded-full shadow-xl border border-gold/20"
     >
       {timeUnits.map((unit, index) => (
         <motion.div
@@ -101,10 +101,10 @@ const Countdown = ({ weddingDate }) => {
           transition={{ delay: index * 0.1, duration: 0.5, ease: 'easeOut' }}
           className="text-center min-w-[60px] md:min-w-[80px]"
         >
-          <div className="text-5xl md:text-6xl lg:text-7xl font-body text-dusty-rose font-bold leading-none mb-2">
+          <div className="text-5xl md:text-6xl lg:text-7xl font-body font-bold leading-none mb-2" style={{ color: textColor }}>
             {String(unit.value).padStart(2, '0')}
           </div>
-          <div className="text-[10px] md:text-xs font-body text-dusty-rose/60 mt-2 uppercase tracking-[0.15em] font-light">
+          <div className="text-[10px] md:text-xs font-body mt-2 uppercase tracking-[0.15em] font-light" style={{ color: textColor }}>
             {unit.label}
           </div>
         </motion.div>

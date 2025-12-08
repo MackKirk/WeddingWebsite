@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import Countdown from './Countdown'
 import { normalizeImageUrl } from '../utils/imageUrl'
 
-const HeroBanner = ({ heroText, heroImageUrl, subtitle, weddingDate }) => {
+const HeroBanner = ({ heroText, heroImageUrl, subtitle, weddingDate, textColor }) => {
   const defaultImage = 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80'
   const imageUrl = normalizeImageUrl(heroImageUrl) || defaultImage
 
@@ -78,9 +78,6 @@ const HeroBanner = ({ heroText, heroImageUrl, subtitle, weddingDate }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-6xl md:text-8xl lg:text-[96px] font-display text-white mb-8 tracking-[0.1em] drop-shadow-lg"
-          style={{
-            textShadow: '-2px -2px 0 rgba(0,0,0,0.3), 2px -2px 0 rgba(0,0,0,0.3), -2px 2px 0 rgba(0,0,0,0.3), 2px 2px 0 rgba(0,0,0,0.3), 0 0 8px rgba(0,0,0,0.5)'
-          }}
         >
           {heroText || 'John & Jane'}
         </motion.h1>
@@ -97,9 +94,6 @@ const HeroBanner = ({ heroText, heroImageUrl, subtitle, weddingDate }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7 }}
           className="text-xl md:text-2xl lg:text-3xl font-body text-white/95 italic font-light mb-16 tracking-wide"
-          style={{
-            textShadow: '-1px -1px 0 rgba(0,0,0,0.5), 1px -1px 0 rgba(0,0,0,0.5), -1px 1px 0 rgba(0,0,0,0.5), 1px 1px 0 rgba(0,0,0,0.5), 0 0 4px rgba(0,0,0,0.7)'
-          }}
         >
           {subtitle || 'Join us for our special day'}
         </motion.p>
@@ -110,7 +104,7 @@ const HeroBanner = ({ heroText, heroImageUrl, subtitle, weddingDate }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.9 }}
           >
-            <Countdown weddingDate={weddingDate} />
+            <Countdown weddingDate={weddingDate} textColor={textColor} />
           </motion.div>
         )}
       </div>

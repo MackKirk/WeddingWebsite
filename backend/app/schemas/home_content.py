@@ -8,6 +8,7 @@ class HomeContentBase(BaseModel):
     hero_image_url: Optional[str] = None
     wedding_date: Optional[date] = None
     subtitle: Optional[str] = None
+    text_color: Optional[str] = None
 
 
 class HomeContent(HomeContentBase):
@@ -22,4 +23,5 @@ class HomeContentUpdate(BaseModel):
     hero_image_url: Optional[str] = None
     wedding_date: Optional[date] = None
     subtitle: Optional[str] = None
+    text_color: Optional[str] = None
 

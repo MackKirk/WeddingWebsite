@@ -10,6 +10,7 @@ const HomeContentTab = () => {
     hero_image_url: '',
     wedding_date: '',
     subtitle: '',
+    text_color: '#8B6F6D',
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -29,6 +30,7 @@ const HomeContentTab = () => {
           hero_image_url: data.hero_image_url || '',
           wedding_date: data.wedding_date || '',
           subtitle: data.subtitle || '',
+          text_color: data.text_color || '#8B6F6D',
         })
       } catch (error) {
         console.error('Error fetching home content:', error)

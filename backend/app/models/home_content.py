@@ -10,4 +10,5 @@ class HomeContent(Base):
     hero_image_url = Column(String, nullable=True)
     wedding_date = Column(Date, nullable=True)
     subtitle = Column(String, default="Join us for our special day")
+    text_color = Column(String, nullable=True, default="#8B6F6D")  # Default darker rose color
 
