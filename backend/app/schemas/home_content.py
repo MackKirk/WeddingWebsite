@@ -9,6 +9,7 @@ class HomeContentBase(BaseModel):
     wedding_date: Optional[date] = None
     subtitle: Optional[str] = None
     text_color: Optional[str] = None
+    navbar_color: Optional[str] = None
 
 
 class HomeContent(HomeContentBase):
@@ -24,4 +25,5 @@ class HomeContentUpdate(BaseModel):
     wedding_date: Optional[date] = None
     subtitle: Optional[str] = None
     text_color: Optional[str] = None
+    navbar_color: Optional[str] = None
 

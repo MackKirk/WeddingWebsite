@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTheme } from '../contexts/ThemeContext'
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const location = useLocation()
+  const { navbarColor } = useTheme()
 
   const navLinks = [
     { path: '/', label: 'Home' },
@@ -23,7 +25,8 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 bg-dusty-rose/95 backdrop-blur-md shadow-lg"
+        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md shadow-lg"
+        style={{ backgroundColor: navbarColor || '#F8F4EC' }}
       >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">

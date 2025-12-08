@@ -11,6 +11,7 @@ const HomeContentTab = () => {
     wedding_date: '',
     subtitle: '',
     text_color: '#8B6F6D',
+    navbar_color: '#F8F4EC',
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -31,6 +32,7 @@ const HomeContentTab = () => {
           wedding_date: data.wedding_date || '',
           subtitle: data.subtitle || '',
           text_color: data.text_color || '#8B6F6D',
+          navbar_color: data.navbar_color || '#F8F4EC',
         })
       } catch (error) {
         console.error('Error fetching home content:', error)
@@ -306,6 +308,57 @@ const HomeContentTab = () => {
               onChange={(e) => setContent({ ...content, wedding_date: e.target.value })}
               className="w-full px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold font-body transition-all duration-300"
             />
+          </div>
+        </div>
+
+        {/* Color Settings */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-gold/20">
+          <div>
+            <label className="block text-dusty-rose font-body font-medium mb-2">
+              Text Color (for countdown and site text)
+            </label>
+            <div className="flex items-center gap-4">
+              <input
+                type="color"
+                value={content.text_color || '#8B6F6D'}
+                onChange={(e) => setContent({ ...content, text_color: e.target.value })}
+                className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer"
+              />
+              <input
+                type="text"
+                value={content.text_color || '#8B6F6D'}
+                onChange={(e) => setContent({ ...content, text_color: e.target.value })}
+                placeholder="#8B6F6D"
+                className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold font-body transition-all duration-300"
+              />
+            </div>
+            <p className="text-sm text-dusty-rose/60 mt-2">
+              Choose a color for the countdown timer and other text elements. Default: #8B6F6D (darker rose)
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-dusty-rose font-body font-medium mb-2">
+              Navbar Background Color
+            </label>
+            <div className="flex items-center gap-4">
+              <input
+                type="color"
+                value={content.navbar_color || '#F8F4EC'}
+                onChange={(e) => setContent({ ...content, navbar_color: e.target.value })}
+                className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer"
+              />
+              <input
+                type="text"
+                value={content.navbar_color || '#F8F4EC'}
+                onChange={(e) => setContent({ ...content, navbar_color: e.target.value })}
+                placeholder="#F8F4EC"
+                className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold font-body transition-all duration-300"
+              />
+            </div>
+            <p className="text-sm text-dusty-rose/60 mt-2">
+              Choose a background color for the top navigation bar. Use light colors for better menu visibility. Default: #F8F4EC (champagne)
+            </p>
           </div>
         </div>
 

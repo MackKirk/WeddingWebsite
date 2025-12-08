@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { ThemeProvider } from './contexts/ThemeContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import HomePage from './pages/HomePage'
@@ -14,7 +15,8 @@ import ProtectedRoute from './admin/ProtectedRoute'
 
 function App() {
   return (
-    <Router>
+    <ThemeProvider>
+      <Router>
       <Routes>
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
@@ -44,7 +46,8 @@ function App() {
           }
         />
       </Routes>
-    </Router>
+      </Router>
+    </ThemeProvider>
   )
 }
 

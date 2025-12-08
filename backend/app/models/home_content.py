@@ -11,4 +11,5 @@ class HomeContent(Base):
     wedding_date = Column(Date, nullable=True)
     subtitle = Column(String, default="Join us for our special day")
     text_color = Column(String, nullable=True, default="#8B6F6D")  # Default darker rose color
+    navbar_color = Column(String, nullable=True, default="#F8F4EC")  # Default champagne color
 
