@@ -13,6 +13,40 @@ app = FastAPI(title="Wedding Website API")
 def health():
     return {"status": "ok", "message": "Server is running"}
 
+@app.get("/debug/admin")
+def debug_admin():
+    """Debug endpoint to check admin credentials (only in dev)"""
+    try:
+        from app.core.config import settings
+        from app.core.database import SessionLocal
+        from app.models.admin_user import AdminUser
+        
+        admin_info = {
+            "env_username": settings.ADMIN_USERNAME,
+            "env_password_set": bool(settings.ADMIN_PASSWORD),
+            "env_password_length": len(settings.ADMIN_PASSWORD) if settings.ADMIN_PASSWORD else 0,
+        }
+        
+        if SessionLocal:
+            db = SessionLocal()
+            try:
+                admin = db.query(AdminUser).filter(
+                    AdminUser.username.ilike(settings.ADMIN_USERNAME)
+                ).first()
+                if admin:
+                    admin_info["db_username"] = admin.username
+                    admin_info["db_user_exists"] = True
+                else:
+                    admin_info["db_user_exists"] = False
+            finally:
+                db.close()
+        else:
+            admin_info["db_error"] = "SessionLocal not initialized"
+        
+        return admin_info
+    except Exception as e:
+        return {"error": str(e), "type": type(e).__name__}
+
 # Agora importa o resto
 try:
     from app.core.config import settings
@@ -139,16 +173,24 @@ async def startup_event():
     # Criar/Atualizar admin user
     try:
         from app.core.database import SessionLocal
+        from app.core.config import settings
+        
+        print(f"Admin config - Username: {settings.ADMIN_USERNAME}", file=sys.stdout)
+        print(f"Admin config - Password length: {len(settings.ADMIN_PASSWORD) if settings.ADMIN_PASSWORD else 0}", file=sys.stdout)
+        
         if SessionLocal is None:
             print("Warning: SessionLocal not initialized, skipping admin creation", file=sys.stderr)
         else:
             from app.models.admin_user import AdminUser
             from app.core.security import get_password_hash
-            from app.core.config import settings
             
             db = SessionLocal()
             try:
-                admin = db.query(AdminUser).filter(AdminUser.username == settings.ADMIN_USERNAME).first()
+                # Buscar admin (case-insensitive)
+                admin = db.query(AdminUser).filter(
+                    AdminUser.username.ilike(settings.ADMIN_USERNAME)
+                ).first()
+                
                 if not admin:
                     # Criar novo admin
                     admin = AdminUser(
@@ -157,20 +199,24 @@ async def startup_event():
                     )
                     db.add(admin)
                     db.commit()
-                    print(f"Admin user created: {settings.ADMIN_USERNAME}", file=sys.stdout)
+                    print(f"✅ Admin user CREATED: {settings.ADMIN_USERNAME}", file=sys.stdout)
                 else:
-                    # Atualizar senha do admin existente (sempre atualiza para garantir que está sincronizado com env vars)
+                    # Atualizar username e senha do admin existente
+                    old_username = admin.username
+                    admin.username = settings.ADMIN_USERNAME
                     admin.hashed_password = get_password_hash(settings.ADMIN_PASSWORD)
                     db.commit()
-                    print(f"Admin user password updated: {settings.ADMIN_USERNAME}", file=sys.stdout)
+                    if old_username != settings.ADMIN_USERNAME:
+                        print(f"✅ Admin username UPDATED: {old_username} → {settings.ADMIN_USERNAME}", file=sys.stdout)
+                    print(f"✅ Admin password UPDATED: {settings.ADMIN_USERNAME}", file=sys.stdout)
             except Exception as e:
-                print(f"Warning: Could not create/update admin user: {e}", file=sys.stderr)
+                print(f"❌ Error creating/updating admin user: {e}", file=sys.stderr)
                 import traceback
                 traceback.print_exc()
             finally:
                 db.close()
     except Exception as e:
-        print(f"Warning: Startup error: {e}", file=sys.stderr)
+        print(f"❌ Startup error: {e}", file=sys.stderr)
         import traceback
         traceback.print_exc()
     

@@ -26,9 +26,11 @@ class Settings(BaseSettings):
     # Static files
     STATIC_DIR: str = "static/uploads"
     
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    model_config = {
+        "env_file": ".env",
+        "case_sensitive": True,
+        "extra": "ignore"
+    }
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

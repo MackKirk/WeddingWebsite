@@ -47,3 +47,22 @@ def update_home_content(
     db.refresh(content)
     return content
 
+
+@router.post("/reset-defaults")
+def reset_to_defaults(db: Session = Depends(get_db)):
+    """Reset home content to default values (Bianca & Joel)"""
+    content = db.query(HomeContent).first()
+    if content:
+        content.hero_text = "Bianca & Joel"
+        content.subtitle = "Join us for our special day"
+    else:
+        content = HomeContent(
+            hero_text="Bianca & Joel",
+            subtitle="Join us for our special day"
+        )
+        db.add(content)
+    
+    db.commit()
+    db.refresh(content)
+    return {"message": "Home content reset to defaults", "content": content}
+
