@@ -7,7 +7,7 @@ import {
   uploadFile,
   reorderGalleryImages,
 } from '../../services/content'
-import { Plus, Trash2, Upload, Save, X, Image as ImageIcon, CheckCircle2, AlertCircle, ChevronUp, ChevronDown } from 'lucide-react'
+import { Plus, Trash2, Upload, Save, X, Image as ImageIcon, CheckCircle2, AlertCircle, GripVertical } from 'lucide-react'
 import { normalizeImageUrl } from '../../utils/imageUrl'
 
 const GalleryTab = () => {
@@ -31,19 +31,50 @@ const GalleryTab = () => {
     }
   }
 
-  const handleReorderImage = async (imageId, direction) => {
-    const orderedIds = images.map((img) => img.id)
-    const idx = orderedIds.indexOf(imageId)
-    if (idx < 0) return
-    const newIdx = direction === 'up' ? idx - 1 : idx + 1
-    if (newIdx < 0 || newIdx >= orderedIds.length) return
-    ;[orderedIds[idx], orderedIds[newIdx]] = [orderedIds[newIdx], orderedIds[idx]]
+  const [draggedId, setDraggedId] = useState(null)
+  const [dragOverId, setDragOverId] = useState(null)
+
+  const applyReorder = async (orderedIds) => {
     try {
       const res = await reorderGalleryImages(orderedIds)
       setImages((res.data || []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)))
     } catch (error) {
       console.error('Error reordering gallery images:', error)
     }
+  }
+
+  const handleDragStart = (e, imageId) => {
+    setDraggedId(imageId)
+    e.dataTransfer.setData('text/plain', String(imageId))
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e, imageId) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    if (draggedId !== imageId) setDragOverId(imageId)
+  }
+
+  const handleDragLeave = () => setDragOverId(null)
+
+  const handleDrop = (e, dropId) => {
+    e.preventDefault()
+    setDragOverId(null)
+    setDraggedId(null)
+    if (!draggedId || draggedId === dropId) return
+    const orderedIds = images.map((img) => img.id)
+    const fromIdx = orderedIds.indexOf(draggedId)
+    const toIdx = orderedIds.indexOf(dropId)
+    if (fromIdx < 0 || toIdx < 0) return
+    const newIds = [...orderedIds]
+    newIds.splice(fromIdx, 1)
+    newIds.splice(toIdx, 0, draggedId)
+    applyReorder(newIds)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedId(null)
+    setDragOverId(null)
   }
 
   const handleDelete = async (id) => {
@@ -106,20 +137,37 @@ const GalleryTab = () => {
         />
       )}
 
+      <p className="text-sm text-dusty-rose/70 mb-4">Arraste pelo ícone ⋮⋮ para reordenar.</p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {images.map((image, index) => (
-          <div key={image.id} className="relative group bg-white rounded-lg border border-gold/20 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+        {images.map((image) => (
+          <div
+            key={image.id}
+            onDragOver={(e) => handleDragOver(e, image.id)}
+            onDragLeave={handleDragLeave}
+            onDrop={(e) => handleDrop(e, image.id)}
+            className={`relative group bg-white rounded-lg border-2 overflow-hidden shadow-sm hover:shadow-md transition-colors ${
+              dragOverId === image.id ? 'border-gold ring-2 ring-gold/30' : 'border-gold/20'
+            } ${draggedId === image.id ? 'opacity-60' : ''}`}
+          >
             <div className="relative">
+              <div
+                draggable
+                onDragStart={(e) => handleDragStart(e, image.id)}
+                onDragEnd={handleDragEnd}
+                className="absolute top-2 left-2 z-10 cursor-grab active:cursor-grabbing bg-white/95 hover:bg-gold/20 text-dusty-rose rounded p-2 shadow touch-none"
+                title="Arrastar para reordenar"
+              >
+                <GripVertical size={20} />
+              </div>
               <img
                 src={normalizeImageUrl(image.image_url)}
                 alt={image.caption || 'Gallery image'}
-                className="w-full h-48 object-cover"
+                className="w-full h-48 object-cover pointer-events-none"
                 onError={(e) => {
                   console.error('Image failed to load:', image.image_url)
                   e.target.style.display = 'none'
                 }}
                 onLoad={(e) => {
-                  // Armazenar dimensões quando a imagem carregar
                   const img = e.target
                   if (!img.dataset.loaded) {
                     img.dataset.loaded = 'true'
@@ -128,37 +176,16 @@ const GalleryTab = () => {
                   }
                 }}
               />
-              <div className="absolute top-2 right-2 flex items-start gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="flex flex-col bg-white/90 rounded shadow-lg overflow-hidden">
-                  <button
-                    type="button"
-                    onClick={() => handleReorderImage(image.id, 'up')}
-                    disabled={index === 0}
-                    className="p-1.5 text-gold hover:bg-gold/20 disabled:opacity-40 disabled:cursor-not-allowed"
-                    title="Move up"
-                  >
-                    <ChevronUp size={16} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleReorderImage(image.id, 'down')}
-                    disabled={index === images.length - 1}
-                    className="p-1.5 text-gold hover:bg-gold/20 disabled:opacity-40 disabled:cursor-not-allowed"
-                    title="Move down"
-                  >
-                    <ChevronDown size={16} />
-                  </button>
-                </div>
-                <button
-                  onClick={() => handleDelete(image.id)}
-                  className="bg-red-500/90 hover:bg-red-600 text-white rounded-full p-2 shadow-lg"
-                  title="Delete image"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => handleDelete(image.id)}
+                className="absolute top-2 right-2 bg-red-500/90 hover:bg-red-600 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-10"
+                title="Delete image"
+              >
+                <Trash2 size={16} />
+              </button>
               {image.image_url.includes('blob.core.windows.net') && (
-                <div className="absolute top-2 left-2 bg-blue-500/90 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                <div className="absolute bottom-2 left-2 bg-blue-500/90 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
                   <CheckCircle2 size={12} />
                   Azure
                 </div>

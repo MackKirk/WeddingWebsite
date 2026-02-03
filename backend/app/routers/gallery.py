@@ -32,6 +32,22 @@ def create_gallery_image(
     return db_image
 
 
+@router.put("/reorder", response_model=List[GalleryImageSchema])
+def reorder_gallery_images(
+    image_ids: List[int],
+    db: Session = Depends(get_db),
+    current_user: AdminUser = Depends(get_current_user)
+):
+    images = db.query(GalleryImage).filter(GalleryImage.id.in_(image_ids)).all()
+    if len(images) != len(image_ids):
+        raise HTTPException(status_code=404, detail="Some gallery images not found")
+    for order, image_id in enumerate(image_ids):
+        image = next(img for img in images if img.id == image_id)
+        image.order = order
+    db.commit()
+    return db.query(GalleryImage).order_by(GalleryImage.order).all()
+
+
 @router.put("/{image_id}", response_model=GalleryImageSchema)
 def update_gallery_image(
     image_id: int,
@@ -64,20 +80,4 @@ def delete_gallery_image(
     db.delete(db_image)
     db.commit()
     return {"message": "Gallery image deleted"}
-
-
-@router.put("/reorder", response_model=List[GalleryImageSchema])
-def reorder_gallery_images(
-    image_ids: List[int],
-    db: Session = Depends(get_db),
-    current_user: AdminUser = Depends(get_current_user)
-):
-    images = db.query(GalleryImage).filter(GalleryImage.id.in_(image_ids)).all()
-    if len(images) != len(image_ids):
-        raise HTTPException(status_code=404, detail="Some gallery images not found")
-    for order, image_id in enumerate(image_ids):
-        image = next(img for img in images if img.id == image_id)
-        image.order = order
-    db.commit()
-    return db.query(GalleryImage).order_by(GalleryImage.order).all()
 

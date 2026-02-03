@@ -12,7 +12,7 @@ import {
   reorderStoryImages,
 } from '../../services/content'
 import { normalizeImageUrl } from '../../utils/imageUrl'
-import { Plus, Trash2, Edit2, Save, X, Upload, ChevronUp, ChevronDown } from 'lucide-react'
+import { Plus, Trash2, Edit2, Save, X, Upload, GripVertical } from 'lucide-react'
 
 const StoryContentTab = () => {
   const [sections, setSections] = useState([])
@@ -41,19 +41,50 @@ const StoryContentTab = () => {
     }
   }
 
-  const handleReorderImage = async (imageId, direction) => {
-    const orderedIds = images.map((img) => img.id)
-    const idx = orderedIds.indexOf(imageId)
-    if (idx < 0) return
-    const newIdx = direction === 'up' ? idx - 1 : idx + 1
-    if (newIdx < 0 || newIdx >= orderedIds.length) return
-    ;[orderedIds[idx], orderedIds[newIdx]] = [orderedIds[newIdx], orderedIds[idx]]
+  const [draggedId, setDraggedId] = useState(null)
+  const [dragOverId, setDragOverId] = useState(null)
+
+  const applyReorder = async (orderedIds) => {
     try {
       const res = await reorderStoryImages(orderedIds)
       setImages((res.data || []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)))
     } catch (error) {
       console.error('Error reordering story images:', error)
     }
+  }
+
+  const handleDragStart = (e, imageId) => {
+    setDraggedId(imageId)
+    e.dataTransfer.setData('text/plain', String(imageId))
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e, imageId) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    if (draggedId !== imageId) setDragOverId(imageId)
+  }
+
+  const handleDragLeave = () => setDragOverId(null)
+
+  const handleDrop = (e, dropId) => {
+    e.preventDefault()
+    setDragOverId(null)
+    setDraggedId(null)
+    if (!draggedId || draggedId === dropId) return
+    const orderedIds = images.map((img) => img.id)
+    const fromIdx = orderedIds.indexOf(draggedId)
+    const toIdx = orderedIds.indexOf(dropId)
+    if (fromIdx < 0 || toIdx < 0) return
+    const newIds = [...orderedIds]
+    newIds.splice(fromIdx, 1)
+    newIds.splice(toIdx, 0, draggedId)
+    applyReorder(newIds)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedId(null)
+    setDragOverId(null)
   }
 
   const handleDeleteSection = async (id) => {
@@ -161,46 +192,44 @@ const StoryContentTab = () => {
           />
         )}
 
+        <p className="text-sm text-dusty-rose/70 mb-4">Arraste pelo ícone ⋮⋮ para reordenar.</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {images.map((image, index) => (
-            <div key={image.id} className="relative group">
+          {images.map((image) => (
+            <div
+              key={image.id}
+              draggable={false}
+              onDragOver={(e) => handleDragOver(e, image.id)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, image.id)}
+              className={`relative group rounded-lg border-2 transition-colors ${
+                dragOverId === image.id ? 'border-gold ring-2 ring-gold/30' : 'border-transparent'
+              } ${draggedId === image.id ? 'opacity-60' : ''}`}
+            >
+              <div
+                draggable
+                onDragStart={(e) => handleDragStart(e, image.id)}
+                onDragEnd={handleDragEnd}
+                className="absolute top-2 left-2 z-10 cursor-grab active:cursor-grabbing bg-white/95 hover:bg-gold/20 text-dusty-rose rounded p-1.5 shadow touch-none"
+                title="Arrastar para reordenar"
+              >
+                <GripVertical size={18} />
+              </div>
               <img
                 src={normalizeImageUrl(image.image_url)}
                 alt={image.caption || 'Story image'}
-                className="w-full h-32 object-cover rounded-lg"
+                className="w-full h-32 object-cover rounded-lg pointer-events-none"
                 onError={(e) => {
                   console.error('Image failed to load:', image.image_url)
                 }}
               />
-              <div className="absolute top-2 right-2 flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="flex gap-0.5">
-                  <button
-                    type="button"
-                    onClick={() => handleReorderImage(image.id, 'up')}
-                    disabled={index === 0}
-                    className="bg-gold/90 hover:bg-gold disabled:opacity-40 disabled:cursor-not-allowed text-white rounded p-1"
-                    title="Move up"
-                  >
-                    <ChevronUp size={16} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleReorderImage(image.id, 'down')}
-                    disabled={index === images.length - 1}
-                    className="bg-gold/90 hover:bg-gold disabled:opacity-40 disabled:cursor-not-allowed text-white rounded p-1"
-                    title="Move down"
-                  >
-                    <ChevronDown size={16} />
-                  </button>
-                </div>
-                <button
-                  onClick={() => handleDeleteImage(image.id)}
-                  className="bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
-                  title="Delete"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => handleDeleteImage(image.id)}
+                className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                title="Excluir"
+              >
+                <Trash2 size={16} />
+              </button>
             </div>
           ))}
         </div>
