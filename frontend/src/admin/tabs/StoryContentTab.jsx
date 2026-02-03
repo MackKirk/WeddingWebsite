@@ -8,9 +8,10 @@ import {
   getStoryImages,
   createStoryImage,
   deleteStoryImage,
+  uploadFile,
 } from '../../services/content'
 import { normalizeImageUrl } from '../../utils/imageUrl'
-import { Plus, Trash2, Edit2, Save, X } from 'lucide-react'
+import { Plus, Trash2, Edit2, Save, X, Upload } from 'lucide-react'
 
 const StoryContentTab = () => {
   const [sections, setSections] = useState([])
@@ -247,13 +248,62 @@ const ImageForm = ({ onClose, onSave }) => {
     caption: '',
     order: 0,
   })
+  const [file, setFile] = useState(null)
+  const [preview, setPreview] = useState(null)
   const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(null)
+
+  const fileInputId = 'story-image-upload'
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files?.[0]
+    if (!selectedFile) return
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (selectedFile.size > maxSize) {
+      alert('The image is too large. Please use an image smaller than 5MB.')
+      return
+    }
+    setFile(selectedFile)
+    setFormData((prev) => ({ ...prev, image_url: '' }))
+    const reader = new FileReader()
+    reader.onload = (ev) => setPreview(ev.target.result)
+    reader.readAsDataURL(selectedFile)
+  }
+
+  const clearFile = () => {
+    setFile(null)
+    setPreview(null)
+    setUploadProgress(null)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    let imageUrl = formData.image_url
+    if (file) {
+      setUploading(true)
+      setUploadProgress('Uploading image...')
+      try {
+        const response = await uploadFile(file)
+        imageUrl = response.data.url
+        setUploadProgress('Upload complete.')
+      } catch (error) {
+        console.error('Error uploading image:', error)
+        setUploadProgress('Error uploading image. Please try again.')
+        alert('Error uploading image')
+        setUploading(false)
+        return
+      } finally {
+        setUploading(false)
+      }
+    }
+    if (!imageUrl?.trim()) {
+      alert('Please add an image: upload a file or enter an image URL.')
+      return
+    }
     setSaving(true)
     try {
-      await createStoryImage(formData)
+      await createStoryImage({ ...formData, image_url: imageUrl })
       onSave()
       onClose()
     } catch (error) {
@@ -263,6 +313,8 @@ const ImageForm = ({ onClose, onSave }) => {
     }
   }
 
+  const canSubmit = (file || formData.image_url?.trim()) && !uploading
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -270,14 +322,60 @@ const ImageForm = ({ onClose, onSave }) => {
       className="mb-6 p-6 border border-gold/30 rounded-lg bg-champagne/50"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="url"
-          placeholder="Image URL"
-          value={formData.image_url}
-          onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-          required
-          className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
-        />
+        {/* Upload or URL */}
+        <div className="space-y-3">
+          <label className="block text-sm font-medium text-dusty-rose">Image</label>
+          <div className="flex flex-wrap items-center gap-3">
+            <input
+              id={fileInputId}
+              type="file"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <label
+              htmlFor={fileInputId}
+              className="flex items-center gap-2 px-4 py-2 bg-gold/20 text-gold rounded-lg hover:bg-gold/30 transition-colors cursor-pointer"
+            >
+              <Upload size={18} />
+              Choose image to upload
+            </label>
+            <span className="text-sm text-dusty-rose/70">or use URL below</span>
+          </div>
+          {file && (
+            <div className="flex items-center gap-3 p-3 bg-white/60 rounded-lg border border-gold/30">
+              {preview && (
+                <img src={preview} alt="Preview" className="h-16 w-16 object-cover rounded" />
+              )}
+              <span className="text-sm text-dusty-rose truncate flex-1">{file.name}</span>
+              <button
+                type="button"
+                onClick={clearFile}
+                className="text-red-500 hover:text-red-700 p-1"
+                title="Remove file"
+              >
+                <X size={18} />
+              </button>
+            </div>
+          )}
+          {uploadProgress && (
+            <p className={`text-sm ${uploadProgress.includes('Error') ? 'text-red-600' : 'text-dusty-rose/80'}`}>
+              {uploadProgress}
+            </p>
+          )}
+          <input
+            type="url"
+            placeholder="Or paste image URL"
+            value={formData.image_url}
+            onChange={(e) => {
+              setFormData({ ...formData, image_url: e.target.value })
+              if (e.target.value) clearFile()
+            }}
+            disabled={!!file}
+            className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50 disabled:opacity-60 disabled:bg-gray-100"
+          />
+        </div>
+
         <input
           type="text"
           placeholder="Caption (optional)"
@@ -288,11 +386,11 @@ const ImageForm = ({ onClose, onSave }) => {
         <div className="flex gap-2">
           <button
             type="submit"
-            disabled={saving}
+            disabled={saving || !canSubmit}
             className="flex items-center gap-2 px-4 py-2 bg-gold text-white rounded-lg hover:bg-gold/90 disabled:opacity-50"
           >
             <Save size={18} />
-            Save
+            {uploading ? 'Uploading...' : saving ? 'Saving...' : 'Save'}
           </button>
           <button
             type="button"

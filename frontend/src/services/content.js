@@ -44,15 +44,18 @@ export const deleteGiftItem = (id) => api.delete(`/api/gifts/${id}`)
 export const createRSVP = (data) => api.post('/api/rsvp', data)
 export const getRSVPs = () => api.get('/api/rsvp')
 
-// Upload
+// Upload (auth required: ensure Bearer token is always sent)
 export const uploadFile = (file) => {
   const formData = new FormData()
   formData.append('file', file)
-  return api.post('/api/upload', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  })
+  const token = localStorage.getItem('token')
+  const headers = {
+    'Content-Type': 'multipart/form-data',
+  }
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
+  }
+  return api.post('/api/upload', formData, { headers })
 }
 
 export const deleteFile = (filename) => api.delete(`/api/upload/${filename}`)
