@@ -9,9 +9,10 @@ import {
   createStoryImage,
   deleteStoryImage,
   uploadFile,
+  reorderStoryImages,
 } from '../../services/content'
 import { normalizeImageUrl } from '../../utils/imageUrl'
-import { Plus, Trash2, Edit2, Save, X, Upload } from 'lucide-react'
+import { Plus, Trash2, Edit2, Save, X, Upload, ChevronUp, ChevronDown } from 'lucide-react'
 
 const StoryContentTab = () => {
   const [sections, setSections] = useState([])
@@ -32,11 +33,26 @@ const StoryContentTab = () => {
         getStoryImages(),
       ])
       setSections(sectionsRes.data)
-      setImages(imagesRes.data)
+      setImages((imagesRes.data || []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)))
     } catch (error) {
       console.error('Error fetching story content:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleReorderImage = async (imageId, direction) => {
+    const orderedIds = images.map((img) => img.id)
+    const idx = orderedIds.indexOf(imageId)
+    if (idx < 0) return
+    const newIdx = direction === 'up' ? idx - 1 : idx + 1
+    if (newIdx < 0 || newIdx >= orderedIds.length) return
+    ;[orderedIds[idx], orderedIds[newIdx]] = [orderedIds[newIdx], orderedIds[idx]]
+    try {
+      const res = await reorderStoryImages(orderedIds)
+      setImages((res.data || []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)))
+    } catch (error) {
+      console.error('Error reordering story images:', error)
     }
   }
 
@@ -146,7 +162,7 @@ const StoryContentTab = () => {
         )}
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {images.map((image) => (
+          {images.map((image, index) => (
             <div key={image.id} className="relative group">
               <img
                 src={normalizeImageUrl(image.image_url)}
@@ -156,12 +172,35 @@ const StoryContentTab = () => {
                   console.error('Image failed to load:', image.image_url)
                 }}
               />
-              <button
-                onClick={() => handleDeleteImage(image.id)}
-                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <Trash2 size={16} />
-              </button>
+              <div className="absolute top-2 right-2 flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex gap-0.5">
+                  <button
+                    type="button"
+                    onClick={() => handleReorderImage(image.id, 'up')}
+                    disabled={index === 0}
+                    className="bg-gold/90 hover:bg-gold disabled:opacity-40 disabled:cursor-not-allowed text-white rounded p-1"
+                    title="Move up"
+                  >
+                    <ChevronUp size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleReorderImage(image.id, 'down')}
+                    disabled={index === images.length - 1}
+                    className="bg-gold/90 hover:bg-gold disabled:opacity-40 disabled:cursor-not-allowed text-white rounded p-1"
+                    title="Move down"
+                  >
+                    <ChevronDown size={16} />
+                  </button>
+                </div>
+                <button
+                  onClick={() => handleDeleteImage(image.id)}
+                  className="bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
+                  title="Delete"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
             </div>
           ))}
         </div>

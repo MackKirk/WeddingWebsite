@@ -14,6 +14,7 @@ export const getStoryImages = () => api.get('/api/story/images')
 export const createStoryImage = (data) => api.post('/api/story/images', data)
 export const updateStoryImage = (id, data) => api.put(`/api/story/images/${id}`, data)
 export const deleteStoryImage = (id) => api.delete(`/api/story/images/${id}`)
+export const reorderStoryImages = (imageIds) => api.put('/api/story/images/reorder', imageIds)
 
 // Wedding Info
 export const getInfoSections = () => api.get('/api/info')
@@ -33,6 +34,7 @@ export const getGalleryImages = () => api.get('/api/gallery')
 export const createGalleryImage = (data) => api.post('/api/gallery', data)
 export const updateGalleryImage = (id, data) => api.put(`/api/gallery/${id}`, data)
 export const deleteGalleryImage = (id) => api.delete(`/api/gallery/${id}`)
+export const reorderGalleryImages = (imageIds) => api.put('/api/gallery/reorder', imageIds)
 
 // Gifts
 export const getGiftItems = () => api.get('/api/gifts')

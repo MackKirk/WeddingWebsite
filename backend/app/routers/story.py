@@ -123,3 +123,19 @@ def delete_story_image(
     db.commit()
     return {"message": "Story image deleted"}
 
+
+@router.put("/images/reorder", response_model=List[StoryImageSchema])
+def reorder_story_images(
+    image_ids: List[int],
+    db: Session = Depends(get_db),
+    current_user: AdminUser = Depends(get_current_user)
+):
+    images = db.query(StoryImage).filter(StoryImage.id.in_(image_ids)).all()
+    if len(images) != len(image_ids):
+        raise HTTPException(status_code=404, detail="Some story images not found")
+    for order, image_id in enumerate(image_ids):
+        image = next(img for img in images if img.id == image_id)
+        image.order = order
+    db.commit()
+    return db.query(StoryImage).order_by(StoryImage.order).all()
+

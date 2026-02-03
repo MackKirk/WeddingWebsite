@@ -5,8 +5,9 @@ import {
   createGalleryImage,
   deleteGalleryImage,
   uploadFile,
+  reorderGalleryImages,
 } from '../../services/content'
-import { Plus, Trash2, Upload, Save, X, Image as ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react'
+import { Plus, Trash2, Upload, Save, X, Image as ImageIcon, CheckCircle2, AlertCircle, ChevronUp, ChevronDown } from 'lucide-react'
 import { normalizeImageUrl } from '../../utils/imageUrl'
 
 const GalleryTab = () => {
@@ -22,11 +23,26 @@ const GalleryTab = () => {
   const fetchData = async () => {
     try {
       const response = await getGalleryImages()
-      setImages(response.data)
+      setImages((response.data || []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)))
     } catch (error) {
       console.error('Error fetching gallery images:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleReorderImage = async (imageId, direction) => {
+    const orderedIds = images.map((img) => img.id)
+    const idx = orderedIds.indexOf(imageId)
+    if (idx < 0) return
+    const newIdx = direction === 'up' ? idx - 1 : idx + 1
+    if (newIdx < 0 || newIdx >= orderedIds.length) return
+    ;[orderedIds[idx], orderedIds[newIdx]] = [orderedIds[newIdx], orderedIds[idx]]
+    try {
+      const res = await reorderGalleryImages(orderedIds)
+      setImages((res.data || []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)))
+    } catch (error) {
+      console.error('Error reordering gallery images:', error)
     }
   }
 
@@ -91,7 +107,7 @@ const GalleryTab = () => {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {images.map((image) => (
+        {images.map((image, index) => (
           <div key={image.id} className="relative group bg-white rounded-lg border border-gold/20 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
             <div className="relative">
               <img
@@ -112,13 +128,35 @@ const GalleryTab = () => {
                   }
                 }}
               />
-              <button
-                onClick={() => handleDelete(image.id)}
-                className="absolute top-2 right-2 bg-red-500/90 hover:bg-red-600 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                title="Delete image"
-              >
-                <Trash2 size={16} />
-              </button>
+              <div className="absolute top-2 right-2 flex items-start gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex flex-col bg-white/90 rounded shadow-lg overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => handleReorderImage(image.id, 'up')}
+                    disabled={index === 0}
+                    className="p-1.5 text-gold hover:bg-gold/20 disabled:opacity-40 disabled:cursor-not-allowed"
+                    title="Move up"
+                  >
+                    <ChevronUp size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleReorderImage(image.id, 'down')}
+                    disabled={index === images.length - 1}
+                    className="p-1.5 text-gold hover:bg-gold/20 disabled:opacity-40 disabled:cursor-not-allowed"
+                    title="Move down"
+                  >
+                    <ChevronDown size={16} />
+                  </button>
+                </div>
+                <button
+                  onClick={() => handleDelete(image.id)}
+                  className="bg-red-500/90 hover:bg-red-600 text-white rounded-full p-2 shadow-lg"
+                  title="Delete image"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
               {image.image_url.includes('blob.core.windows.net') && (
                 <div className="absolute top-2 left-2 bg-blue-500/90 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
                   <CheckCircle2 size={12} />
