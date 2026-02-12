@@ -157,7 +157,7 @@ const InfoTab = () => {
         />
       )}
 
-      <p className="text-sm text-dusty-rose/70 mb-4">Arraste pelo ícone ⋮⋮ para reordenar.</p>
+      <p className="text-sm text-dusty-rose/70 mb-4">Drag by the ⋮⋮ icon to reorder.</p>
       <div className="space-y-4">
         {sections.map((section) => (
           <div
@@ -174,7 +174,7 @@ const InfoTab = () => {
           >
             <div
               className="cursor-grab active:cursor-grabbing touch-none p-1 text-dusty-rose/60 hover:text-gold flex-shrink-0 mt-0.5"
-              title="Arrastar para reordenar"
+              title="Drag to reorder"
             >
               <GripVertical size={20} />
             </div>
@@ -347,10 +347,10 @@ const SectionForm = ({ section, onClose, onSave }) => {
           <label className="block text-dusty-rose font-body font-medium mb-2">
             <div className="flex items-center gap-2">
               <ImageIcon size={18} />
-              Galeria de imagens (opcional)
+              Image gallery (optional)
             </div>
             <span className="text-xs text-dusty-rose/60 font-normal block mt-1">
-              As imagens aparecem no modal ao clicar na secção. Pode guardar sem imagens.
+              Images appear in the modal when the section is clicked. You can save without images.
             </span>
           </label>
           <input
@@ -372,14 +372,14 @@ const SectionForm = ({ section, onClose, onSave }) => {
           <div className="mt-2 flex gap-2">
             <input
               type="url"
-              placeholder="Ou colar URL de imagem (https://...)"
+              placeholder="Or paste image URL (https://...)"
               value={newUrl}
               onChange={(e) => setNewUrl(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addUrlToGallery())}
               className="flex-1 px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
             />
             <button type="button" onClick={addUrlToGallery} className="px-4 py-2 bg-gold/20 text-gold rounded-lg hover:bg-gold/30 border border-gold/30">
-              Adicionar URL
+              Add URL
             </button>
           </div>
           {formData.gallery_urls.length > 0 && (

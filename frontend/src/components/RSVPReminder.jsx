@@ -50,20 +50,20 @@ const RSVPReminder = () => {
               onClick={handleDismiss}
               className="p-1 rounded-full hover:opacity-80 transition-opacity flex-shrink-0"
               style={{ color: 'var(--theme-body-heading)' }}
-              aria-label="Fechar"
+              aria-label="Close"
             >
               <X size={18} />
             </button>
           </div>
           <p className="font-body text-sm mt-1 mb-3" style={{ color: 'var(--theme-body-heading)' }}>
-            Não esqueça de confirmar a sua presença!
+            Don&apos;t forget to confirm your attendance!
           </p>
           <Link
             to="/rsvp"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-body font-medium text-sm text-white shadow-md hover:shadow-lg transition-all"
             style={{ backgroundColor: 'var(--theme-accent)' }}
           >
-            Fazer RSVP
+            RSVP now
           </Link>
           <label className="flex items-center gap-2 mt-3 cursor-pointer group">
             <input
@@ -73,7 +73,7 @@ const RSVPReminder = () => {
               style={{ borderColor: 'var(--theme-accent)', accentColor: 'var(--theme-accent)' }}
             />
             <span className="text-xs font-body opacity-80 group-hover:opacity-100" style={{ color: 'var(--theme-body-heading)' }}>
-              Já fiz o RSVP
+              I&apos;ve already RSVP&apos;d
             </span>
           </label>
         </div>

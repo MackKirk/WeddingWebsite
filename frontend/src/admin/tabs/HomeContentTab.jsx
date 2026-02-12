@@ -327,14 +327,14 @@ const HomeContentTab = () => {
 
         {/* Color Settings by Area */}
         <div className="mt-10 pt-8 border-t border-gold/20 space-y-8">
-          <h3 className="text-2xl font-display text-dusty-rose tracking-wide">Cores do site (por área)</h3>
+          <h3 className="text-2xl font-display text-dusty-rose tracking-wide">Site colors (by area)</h3>
 
-          {/* Topo (Hero) */}
+          {/* Top (Hero) */}
           <div className="p-5 rounded-xl bg-champagne/50 border border-gold/20">
-            <h4 className="text-lg font-display text-dusty-rose mb-4">Topo (Hero)</h4>
+            <h4 className="text-lg font-display text-dusty-rose mb-4">Top (Hero)</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-dusty-rose font-body font-medium mb-2">Cor do texto (countdown e títulos)</label>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Text color (countdown and titles)</label>
                 <div className="flex items-center gap-4">
                   <input type="color" value={content.text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, text_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
                   <input type="text" value={content.text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, text_color: e.target.value })} placeholder="#8B6F6D" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
@@ -345,17 +345,17 @@ const HomeContentTab = () => {
 
           {/* Navbar */}
           <div className="p-5 rounded-xl bg-champagne/50 border border-gold/20">
-            <h4 className="text-lg font-display text-dusty-rose mb-4">Barra de navegação</h4>
+            <h4 className="text-lg font-display text-dusty-rose mb-4">Navigation bar</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-dusty-rose font-body font-medium mb-2">Fundo da navbar</label>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Navbar background</label>
                 <div className="flex items-center gap-4">
                   <input type="color" value={content.navbar_color || '#F8F4EC'} onChange={(e) => setContent({ ...content, navbar_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
                   <input type="text" value={content.navbar_color || '#F8F4EC'} onChange={(e) => setContent({ ...content, navbar_color: e.target.value })} placeholder="#F8F4EC" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
                 </div>
               </div>
               <div>
-                <label className="block text-dusty-rose font-body font-medium mb-2">Cor dos links do menu</label>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Menu links color</label>
                 <div className="flex items-center gap-4">
                   <input type="color" value={content.navbar_text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, navbar_text_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
                   <input type="text" value={content.navbar_text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, navbar_text_color: e.target.value })} placeholder="#8B6F6D" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
@@ -364,26 +364,26 @@ const HomeContentTab = () => {
             </div>
           </div>
 
-          {/* Corpo */}
+          {/* Body */}
           <div className="p-5 rounded-xl bg-champagne/50 border border-gold/20">
-            <h4 className="text-lg font-display text-dusty-rose mb-4">Corpo do site</h4>
+            <h4 className="text-lg font-display text-dusty-rose mb-4">Site body</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-dusty-rose font-body font-medium mb-2">Fundo da página</label>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Page background</label>
                 <div className="flex items-center gap-4">
                   <input type="color" value={content.body_bg_color || '#F8F4EC'} onChange={(e) => setContent({ ...content, body_bg_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
                   <input type="text" value={content.body_bg_color || '#F8F4EC'} onChange={(e) => setContent({ ...content, body_bg_color: e.target.value })} placeholder="#F8F4EC" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
                 </div>
               </div>
               <div>
-                <label className="block text-dusty-rose font-body font-medium mb-2">Cor dos títulos das secções</label>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Section headings color</label>
                 <div className="flex items-center gap-4">
                   <input type="color" value={content.body_heading_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, body_heading_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
                   <input type="text" value={content.body_heading_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, body_heading_color: e.target.value })} placeholder="#8B6F6D" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
                 </div>
               </div>
               <div>
-                <label className="block text-dusty-rose font-body font-medium mb-2">Cor do texto geral</label>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Body text color</label>
                 <div className="flex items-center gap-4">
                   <input type="color" value={content.body_text_color || '#333333'} onChange={(e) => setContent({ ...content, body_text_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
                   <input type="text" value={content.body_text_color || '#333333'} onChange={(e) => setContent({ ...content, body_text_color: e.target.value })} placeholder="#333333" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
@@ -392,19 +392,19 @@ const HomeContentTab = () => {
             </div>
           </div>
 
-          {/* Rodapé */}
+          {/* Footer */}
           <div className="p-5 rounded-xl bg-champagne/50 border border-gold/20">
-            <h4 className="text-lg font-display text-dusty-rose mb-4">Rodapé</h4>
+            <h4 className="text-lg font-display text-dusty-rose mb-4">Footer</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-dusty-rose font-body font-medium mb-2">Fundo do rodapé</label>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Footer background</label>
                 <div className="flex items-center gap-4">
                   <input type="color" value={content.footer_bg_color || '#CFA7A4'} onChange={(e) => setContent({ ...content, footer_bg_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
                   <input type="text" value={content.footer_bg_color || '#CFA7A4'} onChange={(e) => setContent({ ...content, footer_bg_color: e.target.value })} placeholder="#CFA7A4" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
                 </div>
               </div>
               <div>
-                <label className="block text-dusty-rose font-body font-medium mb-2">Cor do texto do rodapé</label>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Footer text color</label>
                 <div className="flex items-center gap-4">
                   <input type="color" value={content.footer_text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, footer_text_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
                   <input type="text" value={content.footer_text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, footer_text_color: e.target.value })} placeholder="#8B6F6D" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
@@ -413,17 +413,17 @@ const HomeContentTab = () => {
             </div>
           </div>
 
-          {/* Acentos */}
+          {/* Accents */}
           <div className="p-5 rounded-xl bg-champagne/50 border border-gold/20">
-            <h4 className="text-lg font-display text-dusty-rose mb-4">Acentos (botões, links ativos, destaques)</h4>
+            <h4 className="text-lg font-display text-dusty-rose mb-4">Accents (buttons, active links, highlights)</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-dusty-rose font-body font-medium mb-2">Cor de destaque</label>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Accent color</label>
                 <div className="flex items-center gap-4">
                   <input type="color" value={content.accent_color || '#D4B483'} onChange={(e) => setContent({ ...content, accent_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
                   <input type="text" value={content.accent_color || '#D4B483'} onChange={(e) => setContent({ ...content, accent_color: e.target.value })} placeholder="#D4B483" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
                 </div>
-                <p className="text-sm text-dusty-rose/60 mt-2">Usada em botões, link ativo no menu, ícones e elementos de destaque.</p>
+                <p className="text-sm text-dusty-rose/60 mt-2">Used for buttons, active menu link, icons and highlight elements.</p>
               </div>
             </div>
           </div>

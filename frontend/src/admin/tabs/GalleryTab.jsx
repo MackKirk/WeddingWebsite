@@ -137,7 +137,7 @@ const GalleryTab = () => {
         />
       )}
 
-      <p className="text-sm text-dusty-rose/70 mb-4">Arraste pelo ícone ⋮⋮ para reordenar.</p>
+      <p className="text-sm text-dusty-rose/70 mb-4">Drag by the ⋮⋮ icon to reorder.</p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {images.map((image) => (
           <div
@@ -155,7 +155,7 @@ const GalleryTab = () => {
                 onDragStart={(e) => handleDragStart(e, image.id)}
                 onDragEnd={handleDragEnd}
                 className="absolute top-2 left-2 z-10 cursor-grab active:cursor-grabbing bg-white/95 hover:bg-gold/20 text-dusty-rose rounded p-2 shadow touch-none"
-                title="Arrastar para reordenar"
+                title="Drag to reorder"
               >
                 <GripVertical size={20} />
               </div>
@@ -203,7 +203,7 @@ const GalleryTab = () => {
                     ? 'Azure Blob Storage' 
                     : image.image_url.startsWith('/static') 
                     ? 'Local Storage' 
-                    : 'URL Externa'}
+                    : 'External URL'}
                 </span>
                 <span className="ml-2">#{image.order || 0}</span>
               </div>

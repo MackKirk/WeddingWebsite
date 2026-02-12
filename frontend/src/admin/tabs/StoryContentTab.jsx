@@ -192,7 +192,7 @@ const StoryContentTab = () => {
           />
         )}
 
-        <p className="text-sm text-dusty-rose/70 mb-4">Arraste pelo ícone ⋮⋮ para reordenar.</p>
+        <p className="text-sm text-dusty-rose/70 mb-4">Drag by the ⋮⋮ icon to reorder.</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {images.map((image) => (
             <div
@@ -210,7 +210,7 @@ const StoryContentTab = () => {
                 onDragStart={(e) => handleDragStart(e, image.id)}
                 onDragEnd={handleDragEnd}
                 className="absolute top-2 left-2 z-10 cursor-grab active:cursor-grabbing bg-white/95 hover:bg-gold/20 text-dusty-rose rounded p-1.5 shadow touch-none"
-                title="Arrastar para reordenar"
+                title="Drag to reorder"
               >
                 <GripVertical size={18} />
               </div>
@@ -226,7 +226,7 @@ const StoryContentTab = () => {
                 type="button"
                 onClick={() => handleDeleteImage(image.id)}
                 className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                title="Excluir"
+                title="Delete"
               >
                 <Trash2 size={16} />
               </button>
