@@ -10,7 +10,7 @@ const HeroBanner = ({ heroText, heroImageUrl, subtitle, weddingDate, textColor }
   const imageUrl = normalizeImageUrl(heroImageUrl) || defaultImage
 
   return (
-    <div className="relative h-screen flex items-center justify-center overflow-hidden">
+    <div className="relative h-screen overflow-hidden">
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -74,40 +74,44 @@ const HeroBanner = ({ heroText, heroImageUrl, subtitle, weddingDate, textColor }
         </svg>
       </motion.div>
 
-      {/* Content */}
-      <div className="relative z-10 text-center px-4">
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-6xl md:text-8xl lg:text-[96px] font-display text-white mb-8 tracking-[0.1em] drop-shadow-lg"
-        >
-          {heroText || 'John & Jane'}
-        </motion.h1>
+      {/* Content: title + subtitle centered; countdown at bottom of hero */}
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="flex-1 flex items-center justify-center text-center px-4">
+          <div>
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-6xl md:text-8xl lg:text-[96px] font-display text-white mb-8 tracking-[0.1em] drop-shadow-lg"
+            >
+              {heroText || 'John & Jane'}
+            </motion.h1>
 
-        <motion.div
-          initial={{ opacity: 0, scaleX: 0 }}
-          animate={{ opacity: 1, scaleX: 1 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="w-32 h-0.5 mx-auto mb-8"
-          style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
-        />
+            <motion.div
+              initial={{ opacity: 0, scaleX: 0 }}
+              animate={{ opacity: 1, scaleX: 1 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="w-32 h-0.5 mx-auto mb-8"
+              style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
+            />
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="text-xl md:text-2xl lg:text-3xl font-body text-white/95 italic font-light mb-16 tracking-wide"
-        >
-          {subtitle || 'Join us for our special day'}
-        </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="text-xl md:text-2xl lg:text-3xl font-body text-white/95 italic font-light tracking-wide"
+            >
+              {subtitle || 'Join us for our special day'}
+            </motion.p>
+          </div>
+        </div>
 
         {weddingDate && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.9 }}
-            className="mt-16 md:mt-24"
+            className="flex justify-center pb-8 md:pb-12"
           >
             <Countdown weddingDate={weddingDate} textColor={textColor} />
           </motion.div>
