@@ -4,6 +4,7 @@ from typing import Optional, List
 
 
 class WeddingInfoSectionBase(BaseModel):
+    sort_order: Optional[int] = 0
     title: str
     description: Optional[str] = None
     icon: Optional[str] = None
@@ -19,6 +20,7 @@ class WeddingInfoSectionCreate(WeddingInfoSectionBase):
 
 
 class WeddingInfoSectionUpdate(BaseModel):
+    sort_order: Optional[int] = None
     title: Optional[str] = None
     description: Optional[str] = None
     icon: Optional[str] = None
@@ -31,6 +33,7 @@ class WeddingInfoSectionUpdate(BaseModel):
 
 class WeddingInfoSection(WeddingInfoSectionBase):
     id: int
+    sort_order: int = 0
 
     @field_validator('gallery_urls', mode='before')
     @classmethod

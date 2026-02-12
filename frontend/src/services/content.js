@@ -21,6 +21,7 @@ export const getInfoSections = () => api.get('/api/info')
 export const createInfoSection = (data) => api.post('/api/info', data)
 export const updateInfoSection = (id, data) => api.put(`/api/info/${id}`, data)
 export const deleteInfoSection = (id) => api.delete(`/api/info/${id}`)
+export const reorderInfoSections = (sectionIds) => api.put('/api/info/reorder', sectionIds)
 
 // Timeline
 export const getTimelineEvents = () => api.get('/api/timeline')

@@ -6,6 +6,7 @@ class WeddingInfoSection(Base):
     __tablename__ = "wedding_info_sections"
     
     id = Column(Integer, primary_key=True, index=True)
+    sort_order = Column(Integer, default=0, nullable=False)
     title = Column(String)
     description = Column(Text, nullable=True)
     icon = Column(String, nullable=True)

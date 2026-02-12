@@ -1,6 +1,7 @@
 import json
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from typing import List
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
@@ -24,7 +25,7 @@ def _serialize_gallery_urls(data: dict) -> dict:
 
 @router.get("", response_model=List[WeddingInfoSectionSchema])
 def get_info_sections(db: Session = Depends(get_db)):
-    return db.query(WeddingInfoSection).all()
+    return db.query(WeddingInfoSection).order_by(WeddingInfoSection.sort_order.asc()).all()
 
 
 @router.post("", response_model=WeddingInfoSectionSchema)
@@ -34,11 +35,29 @@ def create_info_section(
     current_user: AdminUser = Depends(get_current_user)
 ):
     data = _serialize_gallery_urls(section.model_dump())
+    result = db.query(func.max(WeddingInfoSection.sort_order)).scalar()
+    data['sort_order'] = (result or -1) + 1
     db_section = WeddingInfoSection(**data)
     db.add(db_section)
     db.commit()
     db.refresh(db_section)
     return db_section
+
+
+@router.put("/reorder", response_model=List[WeddingInfoSectionSchema])
+def reorder_info_sections(
+    section_ids: List[int],
+    db: Session = Depends(get_db),
+    current_user: AdminUser = Depends(get_current_user)
+):
+    sections = db.query(WeddingInfoSection).filter(WeddingInfoSection.id.in_(section_ids)).all()
+    if len(sections) != len(section_ids):
+        raise HTTPException(status_code=404, detail="Some info sections not found")
+    for order, section_id in enumerate(section_ids):
+        section = next(s for s in sections if s.id == section_id)
+        section.sort_order = order
+    db.commit()
+    return db.query(WeddingInfoSection).order_by(WeddingInfoSection.sort_order.asc()).all()
 
 
 @router.put("/{section_id}", response_model=WeddingInfoSectionSchema)

@@ -5,10 +5,11 @@ import {
   createInfoSection,
   updateInfoSection,
   deleteInfoSection,
+  reorderInfoSections,
   uploadFile,
 } from '../../services/content'
 import {
-  Plus, Trash2, Edit2, Save, X, Upload,
+  Plus, Trash2, Edit2, Save, X, Upload, GripVertical,
   Calendar, MapPin, Shirt, Car, Hotel, Heart, Circle, Cake, Music, 
   UtensilsCrossed, Clock, Gift, Camera, Users, Home, Navigation,
   Building2, CarFront, ParkingCircle, BedDouble, Wifi, Phone,
@@ -62,12 +63,58 @@ const InfoTab = () => {
   const fetchData = async () => {
     try {
       const response = await getInfoSections()
-      setSections(response.data)
+      setSections((response.data || []).sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)))
     } catch (error) {
       console.error('Error fetching info sections:', error)
     } finally {
       setLoading(false)
     }
+  }
+
+  const [draggedId, setDraggedId] = useState(null)
+  const [dragOverId, setDragOverId] = useState(null)
+
+  const applyReorder = async (orderedIds) => {
+    try {
+      const res = await reorderInfoSections(orderedIds)
+      setSections((res.data || []).sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)))
+    } catch (error) {
+      console.error('Error reordering info sections:', error)
+    }
+  }
+
+  const handleDragStart = (e, sectionId) => {
+    setDraggedId(sectionId)
+    e.dataTransfer.setData('text/plain', String(sectionId))
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e, sectionId) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    if (draggedId !== sectionId) setDragOverId(sectionId)
+  }
+
+  const handleDragLeave = () => setDragOverId(null)
+
+  const handleDrop = (e, dropId) => {
+    e.preventDefault()
+    setDragOverId(null)
+    setDraggedId(null)
+    if (!draggedId || draggedId === dropId) return
+    const orderedIds = sections.map((s) => s.id)
+    const fromIdx = orderedIds.indexOf(draggedId)
+    const toIdx = orderedIds.indexOf(dropId)
+    if (fromIdx < 0 || toIdx < 0) return
+    const newIds = [...orderedIds]
+    newIds.splice(fromIdx, 1)
+    newIds.splice(toIdx, 0, draggedId)
+    applyReorder(newIds)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedId(null)
+    setDragOverId(null)
   }
 
   const handleDelete = async (id) => {
@@ -110,40 +157,59 @@ const InfoTab = () => {
         />
       )}
 
+      <p className="text-sm text-dusty-rose/70 mb-4">Arraste pelo ícone ⋮⋮ para reordenar.</p>
       <div className="space-y-4">
         {sections.map((section) => (
           <div
             key={section.id}
-            className="p-4 border border-gold/20 rounded-lg bg-champagne/30"
+            draggable
+            onDragStart={(e) => handleDragStart(e, section.id)}
+            onDragOver={(e) => handleDragOver(e, section.id)}
+            onDragLeave={handleDragLeave}
+            onDrop={(e) => handleDrop(e, section.id)}
+            onDragEnd={handleDragEnd}
+            className={`p-4 border rounded-lg bg-champagne/30 flex items-start gap-3 transition-colors ${
+              dragOverId === section.id ? 'border-gold ring-2 ring-gold/30' : 'border-gold/20'
+            } ${draggedId === section.id ? 'opacity-60' : ''}`}
           >
-            <div className="flex justify-between items-start mb-2">
-              <div>
-                <h3 className="text-xl font-display text-dusty-rose">{section.title}</h3>
-                <span className="text-sm text-dusty-rose/60 font-body">
-                  {section.section_type}
-                </span>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    setEditingSection(section)
-                    setShowForm(true)
-                  }}
-                  className="text-gold hover:text-gold/80"
-                >
-                  <Edit2 size={18} />
-                </button>
-                <button
-                  onClick={() => handleDelete(section.id)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
+            <div
+              className="cursor-grab active:cursor-grabbing touch-none p-1 text-dusty-rose/60 hover:text-gold flex-shrink-0 mt-0.5"
+              title="Arrastar para reordenar"
+            >
+              <GripVertical size={20} />
             </div>
-            {section.description && (
-              <p className="text-dusty-rose/70 font-body">{section.description}</p>
-            )}
+            <div className="flex-1 min-w-0">
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <h3 className="text-xl font-display text-dusty-rose">{section.title}</h3>
+                  <span className="text-sm text-dusty-rose/60 font-body">
+                    {section.section_type}
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingSection(section)
+                      setShowForm(true)
+                    }}
+                    className="text-gold hover:text-gold/80"
+                  >
+                    <Edit2 size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(section.id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              </div>
+              {section.description && (
+                <p className="text-dusty-rose/70 font-body">{section.description}</p>
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -452,7 +518,7 @@ const SectionForm = ({ section, onClose, onSave }) => {
         <div className="flex gap-2">
           <button
             type="submit"
-            disabled={saving || uploading || (!file && !formData.image_url && !section)}
+            disabled={saving || uploading}
             className="flex items-center gap-2 px-4 py-2 bg-gold text-white rounded-lg hover:bg-gold/90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {uploading ? (
@@ -470,9 +536,6 @@ const SectionForm = ({ section, onClose, onSave }) => {
           <button
             type="button"
             onClick={() => {
-              setFile(null)
-              setPreview(null)
-              setImageInfo(null)
               setUploadProgress(null)
               onClose()
             }}
