@@ -188,18 +188,17 @@ const EventForm = ({ event, onClose, onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
-    setUploadProgress('Starting upload...')
     
     try {
       let uploadedImageUrl = formData.image_url
       
-      // If file is selected, upload it first
       if (file) {
         setUploading(true)
+        setUploadProgress('Starting upload...')
         try {
           const response = await uploadFile(file)
           uploadedImageUrl = response.data.url
-          setFormData({ ...formData, image_url: uploadedImageUrl })
+          setFormData((prev) => ({ ...prev, image_url: uploadedImageUrl }))
           setUploadProgress('Upload completed successfully!')
         } catch (error) {
           console.error('Error uploading image:', error)
@@ -224,15 +223,18 @@ const EventForm = ({ event, onClose, onSave }) => {
         ? formData.order
         : (parseInt(formData.order, 10) || 0)
 
+      const emptyToNull = (v) => (v === '' || v === undefined || v === null ? null : v)
+      const imageUrl = typeof uploadedImageUrl === 'string' && uploadedImageUrl.trim() !== '' ? uploadedImageUrl.trim() : null
       const dataToSend = {
         time: timeNormalized || undefined,
-        title: formData.title?.trim() || undefined,
-        description: formData.description?.trim() || null,
-        icon: formData.icon?.trim() || null,
+        title: (formData.title?.trim() || undefined),
+        description: emptyToNull(formData.description?.trim()),
+        icon: emptyToNull(formData.icon?.trim()),
         order: orderNum,
-        image_url: uploadedImageUrl || null,
-        additional_info: formData.additional_info?.trim() || null,
+        image_url: imageUrl,
+        additional_info: emptyToNull(formData.additional_info?.trim()),
       }
+      Object.keys(dataToSend).forEach((k) => dataToSend[k] === undefined && delete dataToSend[k])
 
       if (event) {
         await updateTimelineEvent(event.id, dataToSend)

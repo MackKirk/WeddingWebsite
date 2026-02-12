@@ -7,6 +7,7 @@ import {
   deleteStorySection,
   getStoryImages,
   createStoryImage,
+  updateStoryImage,
   deleteStoryImage,
   uploadFile,
   reorderStoryImages,
@@ -187,6 +188,7 @@ const StoryContentTab = () => {
 
         {showImageForm && (
           <ImageForm
+            sections={sections}
             onClose={() => setShowImageForm(false)}
             onSave={fetchData}
           />
@@ -222,14 +224,35 @@ const StoryContentTab = () => {
                   console.error('Image failed to load:', image.image_url)
                 }}
               />
-              <button
-                type="button"
-                onClick={() => handleDeleteImage(image.id)}
-                className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                title="Delete"
-              >
-                <Trash2 size={16} />
-              </button>
+              <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/60 flex items-center justify-between gap-2">
+                <select
+                  value={image.section_id ?? ''}
+                  onChange={async (e) => {
+                    const sectionId = e.target.value ? parseInt(e.target.value, 10) : null
+                    try {
+                      await updateStoryImage(image.id, { section_id: sectionId })
+                      fetchData()
+                    } catch (err) {
+                      console.error('Error updating image section:', err)
+                    }
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-xs rounded px-2 py-1 bg-white/90 text-dusty-rose border-0 max-w-[120px] truncate"
+                >
+                  <option value="">End of page</option>
+                  {sections.map((s) => (
+                    <option key={s.id} value={s.id}>{s.title}</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => handleDeleteImage(image.id)}
+                  className="text-red-300 hover:text-white p-0.5"
+                  title="Delete"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -310,8 +333,9 @@ const SectionForm = ({ section, onClose, onSave }) => {
   )
 }
 
-const ImageForm = ({ onClose, onSave }) => {
+const ImageForm = ({ sections = [], onClose, onSave }) => {
   const [formData, setFormData] = useState({
+    section_id: null,
     image_url: '',
     caption: '',
     order: 0,
@@ -371,7 +395,12 @@ const ImageForm = ({ onClose, onSave }) => {
     }
     setSaving(true)
     try {
-      await createStoryImage({ ...formData, image_url: imageUrl })
+      await createStoryImage({
+        section_id: formData.section_id || null,
+        image_url: imageUrl,
+        caption: formData.caption || null,
+        order: formData.order ?? 0,
+      })
       onSave()
       onClose()
     } catch (error) {
@@ -436,12 +465,26 @@ const ImageForm = ({ onClose, onSave }) => {
             placeholder="Or paste image URL"
             value={formData.image_url}
             onChange={(e) => {
-              setFormData({ ...formData, image_url: e.target.value })
+              setFormData((prev) => ({ ...prev, image_url: e.target.value }))
               if (e.target.value) clearFile()
             }}
             disabled={!!file}
             className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50 disabled:opacity-60 disabled:bg-gray-100"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-dusty-rose mb-1">Place in section (optional)</label>
+          <select
+            value={formData.section_id ?? ''}
+            onChange={(e) => setFormData((prev) => ({ ...prev, section_id: e.target.value ? parseInt(e.target.value, 10) : null }))}
+            className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
+          >
+            <option value="">End of page (after all sections)</option>
+            {sections.map((s) => (
+              <option key={s.id} value={s.id}>{s.title}</option>
+            ))}
+          </select>
         </div>
 
         <input

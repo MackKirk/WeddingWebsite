@@ -26,6 +26,7 @@ class StorySection(StorySectionBase):
 
 
 class StoryImageBase(BaseModel):
+    section_id: Optional[int] = None
     image_url: str
     caption: Optional[str] = None
     order: int = 0
@@ -36,6 +37,7 @@ class StoryImageCreate(StoryImageBase):
 
 
 class StoryImageUpdate(BaseModel):
+    section_id: Optional[int] = None
     image_url: Optional[str] = None
     caption: Optional[str] = None
     order: Optional[int] = None
