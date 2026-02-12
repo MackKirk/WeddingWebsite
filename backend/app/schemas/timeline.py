@@ -1,6 +1,6 @@
 from pydantic import BaseModel, field_validator
 from typing import Optional
-from datetime import time
+from datetime import time as dt_time
 
 
 def _empty_str_to_none(v):
@@ -10,7 +10,7 @@ def _empty_str_to_none(v):
 
 
 class TimelineEventBase(BaseModel):
-    time: time
+    time: dt_time
     title: str
     description: Optional[str] = None
     icon: Optional[str] = None
@@ -24,7 +24,7 @@ class TimelineEventCreate(TimelineEventBase):
 
 
 class TimelineEventUpdate(BaseModel):
-    time: Optional[time] = None
+    time: Optional[dt_time] = None
     title: Optional[str] = None
     description: Optional[str] = None
     icon: Optional[str] = None

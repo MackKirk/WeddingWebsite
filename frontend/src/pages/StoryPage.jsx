@@ -65,25 +65,25 @@ const StoryPage = () => {
                   {section.content}
                 </p>
                 {sectionImages.length > 0 && (
-                  <div className="mt-8 grid grid-cols-2 gap-3">
+                  <div className="mt-8 space-y-6 w-full">
                     {sectionImages.map((image, imgIndex) => (
                       <motion.div
                         key={image.id}
-                        initial={{ opacity: 0, scale: 0.96 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
+                        initial={{ opacity: 0, y: 12 }}
+                        whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: imgIndex * 0.05 }}
-                        className="relative rounded-xl overflow-hidden bg-black/5"
+                        className="relative w-full rounded-xl overflow-hidden bg-black/5"
                       >
                         <img
                           src={normalizeImageUrl(image.image_url)}
                           alt={image.caption || 'Story image'}
-                          className="w-full h-auto block"
+                          className="w-full h-auto block min-w-0"
                           onError={(e) => { e.target.style.display = 'none' }}
                         />
                         {image.caption && (
-                          <div className="p-3 border-t bg-champagne/80" style={{ borderColor: 'color-mix(in srgb, var(--theme-accent) 20%, transparent)' }}>
-                            <p className="font-body text-xs" style={{ color: 'var(--theme-body-heading)' }}>{image.caption}</p>
+                          <div className="p-4 border-t bg-champagne/80" style={{ borderColor: 'color-mix(in srgb, var(--theme-accent) 20%, transparent)' }}>
+                            <p className="font-body text-sm" style={{ color: 'var(--theme-body-heading)' }}>{image.caption}</p>
                           </div>
                         )}
                       </motion.div>
