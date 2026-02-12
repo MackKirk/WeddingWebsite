@@ -16,8 +16,8 @@ html {
 
 body {
   font-family: 'Montserrat', sans-serif;
-  background-color: #F8F4EC;
-  color: #333;
+  background-color: var(--theme-body-bg, #F8F4EC);
+  color: var(--theme-body-text, #333);
   line-height: 1.7;
   overflow-x: hidden;
 }
@@ -26,6 +26,10 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Playfair Display', serif;
   letter-spacing: 0.05em;
   font-weight: 500;
+}
+
+h2, h3, h4, h5, h6 {
+  color: var(--theme-body-heading, #8B6F6D);
 }
 
 @layer utilities {

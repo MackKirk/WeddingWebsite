@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from './contexts/ThemeContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import RSVPReminder from './components/RSVPReminder'
 import HomePage from './pages/HomePage'
 import StoryPage from './pages/StoryPage'
 import InfoPage from './pages/InfoPage'
@@ -42,6 +43,7 @@ function App() {
                 <Route path="/rsvp" element={<RSVPPage />} />
               </Routes>
               <Footer />
+              <RSVPReminder />
             </>
           }
         />

@@ -12,6 +12,13 @@ const HomeContentTab = () => {
     subtitle: '',
     text_color: '#8B6F6D',
     navbar_color: '#F8F4EC',
+    navbar_text_color: '#8B6F6D',
+    accent_color: '#D4B483',
+    body_bg_color: '#F8F4EC',
+    body_heading_color: '#8B6F6D',
+    body_text_color: '#333333',
+    footer_bg_color: '#CFA7A4',
+    footer_text_color: '#8B6F6D',
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -33,6 +40,13 @@ const HomeContentTab = () => {
           subtitle: data.subtitle || '',
           text_color: data.text_color || '#8B6F6D',
           navbar_color: data.navbar_color || '#F8F4EC',
+          navbar_text_color: data.navbar_text_color ?? '#8B6F6D',
+          accent_color: data.accent_color ?? '#D4B483',
+          body_bg_color: data.body_bg_color ?? '#F8F4EC',
+          body_heading_color: data.body_heading_color ?? '#8B6F6D',
+          body_text_color: data.body_text_color ?? '#333333',
+          footer_bg_color: data.footer_bg_color ?? '#CFA7A4',
+          footer_text_color: data.footer_text_color ?? '#8B6F6D',
         })
       } catch (error) {
         console.error('Error fetching home content:', error)
@@ -311,54 +325,107 @@ const HomeContentTab = () => {
           </div>
         </div>
 
-        {/* Color Settings */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-gold/20">
-          <div>
-            <label className="block text-dusty-rose font-body font-medium mb-2">
-              Text Color (for countdown and site text)
-            </label>
-            <div className="flex items-center gap-4">
-              <input
-                type="color"
-                value={content.text_color || '#8B6F6D'}
-                onChange={(e) => setContent({ ...content, text_color: e.target.value })}
-                className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer"
-              />
-              <input
-                type="text"
-                value={content.text_color || '#8B6F6D'}
-                onChange={(e) => setContent({ ...content, text_color: e.target.value })}
-                placeholder="#8B6F6D"
-                className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold font-body transition-all duration-300"
-              />
+        {/* Color Settings by Area */}
+        <div className="mt-10 pt-8 border-t border-gold/20 space-y-8">
+          <h3 className="text-2xl font-display text-dusty-rose tracking-wide">Cores do site (por área)</h3>
+
+          {/* Topo (Hero) */}
+          <div className="p-5 rounded-xl bg-champagne/50 border border-gold/20">
+            <h4 className="text-lg font-display text-dusty-rose mb-4">Topo (Hero)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Cor do texto (countdown e títulos)</label>
+                <div className="flex items-center gap-4">
+                  <input type="color" value={content.text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, text_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
+                  <input type="text" value={content.text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, text_color: e.target.value })} placeholder="#8B6F6D" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
+                </div>
+              </div>
             </div>
-            <p className="text-sm text-dusty-rose/60 mt-2">
-              Choose a color for the countdown timer and other text elements. Default: #8B6F6D (darker rose)
-            </p>
           </div>
 
-          <div>
-            <label className="block text-dusty-rose font-body font-medium mb-2">
-              Navbar Background Color
-            </label>
-            <div className="flex items-center gap-4">
-              <input
-                type="color"
-                value={content.navbar_color || '#F8F4EC'}
-                onChange={(e) => setContent({ ...content, navbar_color: e.target.value })}
-                className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer"
-              />
-              <input
-                type="text"
-                value={content.navbar_color || '#F8F4EC'}
-                onChange={(e) => setContent({ ...content, navbar_color: e.target.value })}
-                placeholder="#F8F4EC"
-                className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold font-body transition-all duration-300"
-              />
+          {/* Navbar */}
+          <div className="p-5 rounded-xl bg-champagne/50 border border-gold/20">
+            <h4 className="text-lg font-display text-dusty-rose mb-4">Barra de navegação</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Fundo da navbar</label>
+                <div className="flex items-center gap-4">
+                  <input type="color" value={content.navbar_color || '#F8F4EC'} onChange={(e) => setContent({ ...content, navbar_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
+                  <input type="text" value={content.navbar_color || '#F8F4EC'} onChange={(e) => setContent({ ...content, navbar_color: e.target.value })} placeholder="#F8F4EC" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Cor dos links do menu</label>
+                <div className="flex items-center gap-4">
+                  <input type="color" value={content.navbar_text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, navbar_text_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
+                  <input type="text" value={content.navbar_text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, navbar_text_color: e.target.value })} placeholder="#8B6F6D" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
+                </div>
+              </div>
             </div>
-            <p className="text-sm text-dusty-rose/60 mt-2">
-              Choose a background color for the top navigation bar. Use light colors for better menu visibility. Default: #F8F4EC (champagne)
-            </p>
+          </div>
+
+          {/* Corpo */}
+          <div className="p-5 rounded-xl bg-champagne/50 border border-gold/20">
+            <h4 className="text-lg font-display text-dusty-rose mb-4">Corpo do site</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Fundo da página</label>
+                <div className="flex items-center gap-4">
+                  <input type="color" value={content.body_bg_color || '#F8F4EC'} onChange={(e) => setContent({ ...content, body_bg_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
+                  <input type="text" value={content.body_bg_color || '#F8F4EC'} onChange={(e) => setContent({ ...content, body_bg_color: e.target.value })} placeholder="#F8F4EC" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Cor dos títulos das secções</label>
+                <div className="flex items-center gap-4">
+                  <input type="color" value={content.body_heading_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, body_heading_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
+                  <input type="text" value={content.body_heading_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, body_heading_color: e.target.value })} placeholder="#8B6F6D" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Cor do texto geral</label>
+                <div className="flex items-center gap-4">
+                  <input type="color" value={content.body_text_color || '#333333'} onChange={(e) => setContent({ ...content, body_text_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
+                  <input type="text" value={content.body_text_color || '#333333'} onChange={(e) => setContent({ ...content, body_text_color: e.target.value })} placeholder="#333333" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Rodapé */}
+          <div className="p-5 rounded-xl bg-champagne/50 border border-gold/20">
+            <h4 className="text-lg font-display text-dusty-rose mb-4">Rodapé</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Fundo do rodapé</label>
+                <div className="flex items-center gap-4">
+                  <input type="color" value={content.footer_bg_color || '#CFA7A4'} onChange={(e) => setContent({ ...content, footer_bg_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
+                  <input type="text" value={content.footer_bg_color || '#CFA7A4'} onChange={(e) => setContent({ ...content, footer_bg_color: e.target.value })} placeholder="#CFA7A4" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Cor do texto do rodapé</label>
+                <div className="flex items-center gap-4">
+                  <input type="color" value={content.footer_text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, footer_text_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
+                  <input type="text" value={content.footer_text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, footer_text_color: e.target.value })} placeholder="#8B6F6D" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Acentos */}
+          <div className="p-5 rounded-xl bg-champagne/50 border border-gold/20">
+            <h4 className="text-lg font-display text-dusty-rose mb-4">Acentos (botões, links ativos, destaques)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Cor de destaque</label>
+                <div className="flex items-center gap-4">
+                  <input type="color" value={content.accent_color || '#D4B483'} onChange={(e) => setContent({ ...content, accent_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
+                  <input type="text" value={content.accent_color || '#D4B483'} onChange={(e) => setContent({ ...content, accent_color: e.target.value })} placeholder="#D4B483" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
+                </div>
+                <p className="text-sm text-dusty-rose/60 mt-2">Usada em botões, link ativo no menu, ícones e elementos de destaque.</p>
+              </div>
+            </div>
           </div>
         </div>
 

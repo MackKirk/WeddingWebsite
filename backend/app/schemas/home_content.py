@@ -10,6 +10,13 @@ class HomeContentBase(BaseModel):
     subtitle: Optional[str] = None
     text_color: Optional[str] = None
     navbar_color: Optional[str] = None
+    navbar_text_color: Optional[str] = None
+    accent_color: Optional[str] = None
+    body_bg_color: Optional[str] = None
+    body_heading_color: Optional[str] = None
+    body_text_color: Optional[str] = None
+    footer_bg_color: Optional[str] = None
+    footer_text_color: Optional[str] = None
 
 
 class HomeContent(HomeContentBase):
@@ -26,4 +33,11 @@ class HomeContentUpdate(BaseModel):
     subtitle: Optional[str] = None
     text_color: Optional[str] = None
     navbar_color: Optional[str] = None
+    navbar_text_color: Optional[str] = None
+    accent_color: Optional[str] = None
+    body_bg_color: Optional[str] = None
+    body_heading_color: Optional[str] = None
+    body_text_color: Optional[str] = None
+    footer_bg_color: Optional[str] = None
+    footer_text_color: Optional[str] = None
 

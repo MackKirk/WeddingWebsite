@@ -11,6 +11,7 @@ class WeddingInfoSection(Base):
     icon = Column(String, nullable=True)
     section_type = Column(String)  # ceremony, reception, dress_code, parking, hotel
     map_embed_url = Column(String, nullable=True)  # For Google Maps iframe
-    image_url = Column(String, nullable=True)  # Image for the section
+    image_url = Column(String, nullable=True)  # Legacy single image (kept for backward compat)
+    gallery_urls = Column(Text, nullable=True)  # JSON array of image URLs for modal gallery
     additional_info = Column(Text, nullable=True)  # Additional details for modal
 

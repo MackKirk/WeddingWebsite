@@ -7,7 +7,10 @@ import { useTheme } from '../contexts/ThemeContext'
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const location = useLocation()
-  const { navbarColor } = useTheme()
+  const { navbarColor, navbarTextColor, accentColor } = useTheme()
+  const navBg = navbarColor || '#F8F4EC'
+  const navText = navbarTextColor || '#8B6F6D'
+  const accent = accentColor || '#D4B483'
 
   const navLinks = [
     { path: '/', label: 'Home' },
@@ -26,11 +29,11 @@ const Navbar = () => {
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
         className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md shadow-lg"
-        style={{ backgroundColor: navbarColor || '#F8F4EC' }}
+        style={{ backgroundColor: navBg }}
       >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <Link to="/" className="text-2xl font-display text-gold font-semibold">
+            <Link to="/" className="text-2xl font-display font-semibold" style={{ color: accent }}>
               Bianca & Joel Wedding
             </Link>
 
@@ -40,24 +43,27 @@ const Navbar = () => {
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`relative text-sm font-body font-medium tracking-wide transition-colors duration-500 ${
-                    location.pathname === link.path
-                      ? 'text-gold'
-                      : 'text-dusty-rose hover:text-gold'
-                  }`}
+                  className="relative text-sm font-body font-medium tracking-wide transition-colors duration-500"
+                  style={{
+                    color: location.pathname === link.path ? accent : navText,
+                  }}
+                  onMouseEnter={(e) => { if (location.pathname !== link.path) e.currentTarget.style.color = accent }}
+                  onMouseLeave={(e) => { if (location.pathname !== link.path) e.currentTarget.style.color = navText }}
                 >
                   {link.label}
                   {location.pathname === link.path && (
                     <motion.div
                       layoutId="underline"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent to-transparent"
+                      style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
                       initial={false}
                       transition={{ type: 'spring', stiffness: 300, damping: 30, duration: 0.4 }}
                     />
                   )}
                   {location.pathname !== link.path && (
                     <motion.span
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gold origin-left"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 origin-left"
+                      style={{ backgroundColor: accent }}
                       initial={{ scaleX: 0 }}
                       whileHover={{ scaleX: 1 }}
                       transition={{ duration: 0.4, ease: 'easeOut' }}
@@ -69,7 +75,10 @@ const Navbar = () => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden text-dusty-rose hover:text-gold transition-colors"
+              className="md:hidden transition-colors"
+              style={{ color: navText }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = accent }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = navText }}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -95,7 +104,8 @@ const Navbar = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300, duration: 0.5 }}
-              className="fixed top-0 right-0 bottom-0 w-72 bg-champagne/98 backdrop-blur-xl shadow-2xl z-50 md:hidden"
+              className="fixed top-0 right-0 bottom-0 w-72 backdrop-blur-xl shadow-2xl z-50 md:hidden"
+              style={{ backgroundColor: `${navBg}F8` }}
             >
               <div className="flex flex-col pt-24 px-6 space-y-6">
                 {navLinks.map((link) => (
@@ -103,11 +113,8 @@ const Navbar = () => {
                     key={link.path}
                     to={link.path}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`text-lg font-body font-medium transition-colors ${
-                      location.pathname === link.path
-                        ? 'text-gold'
-                        : 'text-dusty-rose hover:text-gold'
-                    }`}
+                    className="text-lg font-body font-medium transition-colors"
+                    style={{ color: location.pathname === link.path ? accent : navText }}
                   >
                     {link.label}
                   </Link>

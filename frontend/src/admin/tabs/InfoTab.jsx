@@ -158,114 +158,87 @@ const SectionForm = ({ section, onClose, onSave }) => {
     icon: section?.icon || '',
     section_type: section?.section_type || 'ceremony',
     map_embed_url: section?.map_embed_url || '',
-    image_url: section?.image_url || '',
+    gallery_urls: Array.isArray(section?.gallery_urls) ? [...section.gallery_urls] : (section?.image_url ? [section.image_url] : []),
     additional_info: section?.additional_info || '',
   })
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [showIconPicker, setShowIconPicker] = useState(false)
-  const [file, setFile] = useState(null)
-  const [imageInfo, setImageInfo] = useState(null)
-  const [preview, setPreview] = useState(null)
   const [uploadProgress, setUploadProgress] = useState(null)
+  const [newUrl, setNewUrl] = useState('')
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]
-    if (!selectedFile) return
-
-    // Validate size (5MB)
-    const maxSize = 5 * 1024 * 1024 // 5MB
-    if (selectedFile.size > maxSize) {
-      alert('The image is too large. Please use an image smaller than 5MB.')
-      return
+  const handleFilesChange = async (e) => {
+    const files = e.target.files ? Array.from(e.target.files) : []
+    if (files.length === 0) return
+    const maxSize = 5 * 1024 * 1024
+    for (const f of files) {
+      if (f.size > maxSize) {
+        alert(`"${f.name}" is too large. Please use images smaller than 5MB.`)
+        return
+      }
     }
-
-    setFile(selectedFile)
-
-    // Create preview
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      setPreview(e.target.result)
+    setUploading(true)
+    setUploadProgress(`Uploading ${files.length} image(s)...`)
+    try {
+      const urls = []
+      for (let i = 0; i < files.length; i++) {
+        setUploadProgress(`Uploading image ${i + 1} of ${files.length}...`)
+        const response = await uploadFile(files[i])
+        urls.push(response.data.url)
+      }
+      setFormData((prev) => ({ ...prev, gallery_urls: [...prev.gallery_urls, ...urls] }))
+      setUploadProgress(`Uploaded ${files.length} image(s).`)
+    } catch (error) {
+      console.error('Error uploading images:', error)
+      setUploadProgress('Error uploading image(s). Please try again.')
+      alert('Error uploading image(s)')
+    } finally {
+      setUploading(false)
+      e.target.value = ''
+      setTimeout(() => setUploadProgress(null), 3000)
     }
-    reader.readAsDataURL(selectedFile)
+  }
 
-    // Get image information
-    const img = new Image()
-    img.onload = () => {
-      const fileSizeMB = (selectedFile.size / (1024 * 1024)).toFixed(2)
-      setImageInfo({
-        width: img.width,
-        height: img.height,
-        size: fileSizeMB,
-        aspectRatio: (img.width / img.height).toFixed(2),
-        fileName: selectedFile.name,
-      })
-    }
-    img.src = URL.createObjectURL(selectedFile)
+  const removeGalleryImage = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      gallery_urls: prev.gallery_urls.filter((_, i) => i !== index),
+    }))
+  }
+
+  const addUrlToGallery = () => {
+    const url = newUrl?.trim()
+    if (!url) return
+    setFormData((prev) => ({ ...prev, gallery_urls: [...prev.gallery_urls, url] }))
+    setNewUrl('')
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
-    setUploadProgress('Starting upload...')
-    
     try {
-      let uploadedImageUrl = formData.image_url
-      
-      // If file is selected, upload it first
-      if (file) {
-        setUploading(true)
-        try {
-          const response = await uploadFile(file)
-          uploadedImageUrl = response.data.url
-          setFormData({ ...formData, image_url: uploadedImageUrl })
-          setUploadProgress('Upload completed successfully!')
-        } catch (error) {
-          console.error('Error uploading image:', error)
-          setUploadProgress('Error uploading image. Please try again.')
-          alert('Error uploading image')
-          setSaving(false)
-          setUploading(false)
-          return
-        } finally {
-          setUploading(false)
-        }
-      }
-
-      // Convert empty strings to null for optional fields
       const dataToSend = {
-        ...formData,
-        image_url: uploadedImageUrl || null, // Use the uploaded URL directly
+        title: formData.title,
         description: formData.description || null,
         icon: formData.icon || null,
+        section_type: formData.section_type,
         map_embed_url: formData.map_embed_url || null,
+        gallery_urls: formData.gallery_urls.length > 0 ? formData.gallery_urls : null,
         additional_info: formData.additional_info || null,
       }
 
-      console.log('Saving info section with data:', dataToSend) // Debug log
-
       if (section) {
-        const updated = await updateInfoSection(section.id, dataToSend)
-        console.log('Updated section:', updated) // Debug log
+        await updateInfoSection(section.id, dataToSend)
       } else {
-        const created = await createInfoSection(dataToSend)
-        console.log('Created section:', created) // Debug log
+        await createInfoSection(dataToSend)
       }
-      
-      // Reset form state
-      setFile(null)
-      setPreview(null)
-      setImageInfo(null)
-      setUploadProgress(null)
-      
-      onSave() // This should refresh the data
+      onSave()
       onClose()
     } catch (error) {
       console.error('Error saving section:', error)
       alert('Error saving section')
     } finally {
       setSaving(false)
-      setTimeout(() => setUploadProgress(null), 3000)
     }
   }
 
@@ -307,103 +280,58 @@ const SectionForm = ({ section, onClose, onSave }) => {
         <div>
           <label className="block text-dusty-rose font-body font-medium mb-2">
             <div className="flex items-center gap-2">
-              <Upload size={18} />
-              Upload Image to Azure Blob Storage
+              <ImageIcon size={18} />
+              Galeria de imagens (opcional)
             </div>
             <span className="text-xs text-dusty-rose/60 font-normal block mt-1">
-              Formats: JPG, PNG, GIF, WEBP. Maximum 5MB.
+              As imagens aparecem no modal ao clicar na secção. Pode guardar sem imagens.
             </span>
           </label>
           <input
             type="file"
             accept="image/*"
-            onChange={handleFileChange}
-            className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
+            multiple
+            disabled={uploading}
+            onChange={handleFilesChange}
+            className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50 disabled:opacity-50"
           />
-          
-          {/* Preview and image information */}
-          {preview && imageInfo && (
-            <div className="mt-4 p-4 bg-white rounded-lg border border-gold/30">
-              <div className="flex gap-4">
-                <div className="flex-shrink-0">
-                  <img
-                    src={preview}
-                    alt="Preview"
-                    className="w-32 h-32 object-cover rounded-lg border border-gold/20"
-                  />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-dusty-rose mb-2">Image Information</h4>
-                  <div className="space-y-1 text-sm text-dusty-rose/80">
-                    <div className="flex items-center gap-2">
-                      <ImageIcon size={14} />
-                      <span><strong>Name:</strong> {imageInfo.fileName}</span>
-                    </div>
-                    <div>
-                      <strong>Dimensions:</strong> {imageInfo.width} × {imageInfo.height}px
-                      {imageInfo.width >= 1920 && imageInfo.height >= 1080 && (
-                        <span className="ml-2 text-green-600 flex items-center gap-1">
-                          <CheckCircle2 size={12} />
-                          Ideal
-                        </span>
-                      )}
-                      {(imageInfo.width < 1200 || imageInfo.height < 1200) && (
-                        <span className="ml-2 text-amber-600 flex items-center gap-1">
-                          <AlertCircle size={12} />
-                          May appear pixelated
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <strong>Size:</strong> {imageInfo.size} MB
-                      {parseFloat(imageInfo.size) > 3 && (
-                        <span className="ml-2 text-amber-600 flex items-center gap-1">
-                          <AlertCircle size={12} />
-                          Large (may take time)
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <strong>Aspect Ratio:</strong> {imageInfo.aspectRatio}:1
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Upload status */}
           {uploadProgress && (
-            <div className={`mt-3 p-3 rounded-lg ${
-              uploadProgress.includes('Error') 
-                ? 'bg-red-50 border border-red-200 text-red-700' 
-                : 'bg-green-50 border border-green-200 text-green-700'
+            <div className={`mt-2 p-2 rounded-lg text-sm ${
+              uploadProgress.includes('Error') ? 'bg-red-50 border border-red-200 text-red-700' : 'bg-green-50 border border-green-200 text-green-700'
             }`}>
-              <div className="flex items-center gap-2">
-                {uploadProgress.includes('Error') ? (
-                  <AlertCircle size={16} />
-                ) : (
-                  <CheckCircle2 size={16} />
-                )}
-                <span className="text-sm font-medium">{uploadProgress}</span>
-              </div>
+              {uploadProgress.includes('Error') ? <AlertCircle size={14} className="inline mr-1" /> : <CheckCircle2 size={14} className="inline mr-1" />}
+              {uploadProgress}
             </div>
           )}
-
-          <div className="text-center text-dusty-rose/60 font-body my-4">OR</div>
-
-          <div>
-            <label className="block text-dusty-rose font-body font-medium mb-2">
-              Image URL (if already hosted)
-            </label>
+          <div className="mt-2 flex gap-2">
             <input
               type="url"
-              placeholder="https://..."
-              value={formData.image_url || ''}
-              onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
+              placeholder="Ou colar URL de imagem (https://...)"
+              value={newUrl}
+              onChange={(e) => setNewUrl(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addUrlToGallery())}
+              className="flex-1 px-4 py-2 rounded-lg border border-gold/50 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
             />
+            <button type="button" onClick={addUrlToGallery} className="px-4 py-2 bg-gold/20 text-gold rounded-lg hover:bg-gold/30 border border-gold/30">
+              Adicionar URL
+            </button>
           </div>
+          {formData.gallery_urls.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-3">
+              {formData.gallery_urls.map((url, index) => (
+                <div key={`${url}-${index}`} className="relative group">
+                  <img src={url} alt="" className="w-24 h-24 object-cover rounded-lg border border-gold/30" onError={(e) => e.target.style.display = 'none'} />
+                  <button
+                    type="button"
+                    onClick={() => removeGalleryImage(index)}
+                    className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full opacity-90 hover:opacity-100 shadow"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div>
           <label className="block text-dusty-rose font-body font-medium mb-2">

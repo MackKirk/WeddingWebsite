@@ -28,6 +28,7 @@ const RSVPForm = () => {
         message: formData.message?.trim() || null,
       }
       await createRSVP(cleanedData)
+      localStorage.setItem('rsvp_reminder_dismissed', 'true')
       setShowSuccess(true)
       setFormData({
         guest_name: '',

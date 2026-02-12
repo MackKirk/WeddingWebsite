@@ -1,3 +1,4 @@
+import json
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
@@ -14,6 +15,13 @@ from app.schemas.wedding_info import (
 router = APIRouter(prefix="/api/info", tags=["info"])
 
 
+def _serialize_gallery_urls(data: dict) -> dict:
+    """Convert gallery_urls list to JSON string for DB storage."""
+    if 'gallery_urls' in data and isinstance(data['gallery_urls'], list):
+        data = {**data, 'gallery_urls': json.dumps(data['gallery_urls']) if data['gallery_urls'] else None}
+    return data
+
+
 @router.get("", response_model=List[WeddingInfoSectionSchema])
 def get_info_sections(db: Session = Depends(get_db)):
     return db.query(WeddingInfoSection).all()
@@ -25,7 +33,8 @@ def create_info_section(
     db: Session = Depends(get_db),
     current_user: AdminUser = Depends(get_current_user)
 ):
-    db_section = WeddingInfoSection(**section.model_dump())
+    data = _serialize_gallery_urls(section.model_dump())
+    db_section = WeddingInfoSection(**data)
     db.add(db_section)
     db.commit()
     db.refresh(db_section)
@@ -44,6 +53,7 @@ def update_info_section(
         raise HTTPException(status_code=404, detail="Info section not found")
     
     update_data = section_update.model_dump(exclude_unset=True)
+    update_data = _serialize_gallery_urls(update_data)
     for field, value in update_data.items():
         setattr(db_section, field, value)
     
