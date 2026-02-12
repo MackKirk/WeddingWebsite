@@ -5,6 +5,7 @@ import {
   createStorySection,
   updateStorySection,
   deleteStorySection,
+  reorderStorySections,
   getStoryImages,
   createStoryImage,
   updateStoryImage,
@@ -33,7 +34,7 @@ const StoryContentTab = () => {
         getStorySections(),
         getStoryImages(),
       ])
-      setSections(sectionsRes.data)
+      setSections((sectionsRes.data || []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)))
       setImages((imagesRes.data || []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)))
     } catch (error) {
       console.error('Error fetching story content:', error)
@@ -42,8 +43,19 @@ const StoryContentTab = () => {
     }
   }
 
+  const [sectionDraggedId, setSectionDraggedId] = useState(null)
+  const [sectionDragOverId, setSectionDragOverId] = useState(null)
   const [draggedId, setDraggedId] = useState(null)
   const [dragOverId, setDragOverId] = useState(null)
+
+  const applyReorderSections = async (orderedIds) => {
+    try {
+      const res = await reorderStorySections(orderedIds)
+      setSections((res.data || []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)))
+    } catch (error) {
+      console.error('Error reordering story sections:', error)
+    }
+  }
 
   const applyReorder = async (orderedIds) => {
     try {
@@ -141,33 +153,76 @@ const StoryContentTab = () => {
           />
         )}
 
+        <p className="text-sm text-dusty-rose/70 mb-4">Drag by the ⋮⋮ icon to reorder sections.</p>
         <div className="space-y-4">
           {sections.map((section) => (
             <div
               key={section.id}
-              className="p-4 border border-gold/20 rounded-lg bg-champagne/30"
+              draggable
+              onDragStart={(e) => {
+                setSectionDraggedId(section.id)
+                e.dataTransfer.setData('text/plain', String(section.id))
+                e.dataTransfer.effectAllowed = 'move'
+              }}
+              onDragOver={(e) => {
+                e.preventDefault()
+                e.dataTransfer.dropEffect = 'move'
+                if (sectionDraggedId !== section.id) setSectionDragOverId(section.id)
+              }}
+              onDragLeave={() => setSectionDragOverId(null)}
+              onDrop={(e) => {
+                e.preventDefault()
+                setSectionDragOverId(null)
+                setSectionDraggedId(null)
+                if (!sectionDraggedId || sectionDraggedId === section.id) return
+                const orderedIds = sections.map((s) => s.id)
+                const fromIdx = orderedIds.indexOf(sectionDraggedId)
+                const toIdx = orderedIds.indexOf(section.id)
+                if (fromIdx < 0 || toIdx < 0) return
+                const newIds = [...orderedIds]
+                newIds.splice(fromIdx, 1)
+                newIds.splice(toIdx, 0, sectionDraggedId)
+                applyReorderSections(newIds)
+              }}
+              onDragEnd={() => {
+                setSectionDraggedId(null)
+                setSectionDragOverId(null)
+              }}
+              className={`p-4 border rounded-lg bg-champagne/30 flex items-start gap-3 transition-colors ${
+                sectionDragOverId === section.id ? 'border-gold ring-2 ring-gold/30' : 'border-gold/20'
+              } ${sectionDraggedId === section.id ? 'opacity-60' : ''}`}
             >
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-xl font-display text-dusty-rose">{section.title}</h3>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      setEditingSection(section)
-                      setShowSectionForm(true)
-                    }}
-                    className="text-gold hover:text-gold/80"
-                  >
-                    <Edit2 size={18} />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteSection(section.id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </div>
+              <div
+                className="cursor-grab active:cursor-grabbing touch-none p-1 text-dusty-rose/60 hover:text-gold flex-shrink-0 mt-0.5"
+                title="Drag to reorder"
+              >
+                <GripVertical size={20} />
               </div>
-              <p className="text-dusty-rose/70 font-body">{section.content}</p>
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-xl font-display text-dusty-rose">{section.title}</h3>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingSection(section)
+                        setShowSectionForm(true)
+                      }}
+                      className="text-gold hover:text-gold/80"
+                    >
+                      <Edit2 size={18} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteSection(section.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </div>
+                <p className="text-dusty-rose/70 font-body">{section.content}</p>
+              </div>
             </div>
           ))}
         </div>

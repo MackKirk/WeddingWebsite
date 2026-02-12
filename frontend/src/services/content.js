@@ -9,6 +9,7 @@ export const getStorySections = () => api.get('/api/story/sections')
 export const createStorySection = (data) => api.post('/api/story/sections', data)
 export const updateStorySection = (id, data) => api.put(`/api/story/sections/${id}`, data)
 export const deleteStorySection = (id) => api.delete(`/api/story/sections/${id}`)
+export const reorderStorySections = (sectionIds) => api.put('/api/story/sections/reorder', sectionIds)
 
 export const getStoryImages = () => api.get('/api/story/images')
 export const createStoryImage = (data) => api.post('/api/story/images', data)

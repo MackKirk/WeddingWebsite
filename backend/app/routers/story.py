@@ -37,6 +37,22 @@ def create_story_section(
     return db_section
 
 
+@router.put("/sections/reorder", response_model=List[StorySectionSchema])
+def reorder_story_sections(
+    section_ids: List[int],
+    db: Session = Depends(get_db),
+    current_user: AdminUser = Depends(get_current_user)
+):
+    sections = db.query(StorySection).filter(StorySection.id.in_(section_ids)).all()
+    if len(sections) != len(section_ids):
+        raise HTTPException(status_code=404, detail="Some story sections not found")
+    for order, section_id in enumerate(section_ids):
+        section = next(s for s in sections if s.id == section_id)
+        section.order = order
+    db.commit()
+    return db.query(StorySection).order_by(StorySection.order).all()
+
+
 @router.put("/sections/{section_id}", response_model=StorySectionSchema)
 def update_story_section(
     section_id: int,
