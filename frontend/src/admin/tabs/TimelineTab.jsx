@@ -119,12 +119,27 @@ const TimelineTab = () => {
 }
 
 const EventForm = ({ event, onClose, onSave }) => {
+  const normalizeTimeForInput = (t) => {
+    if (!t) return ''
+    const s = String(t).trim()
+    if (!s) return ''
+    if (s.includes(':')) {
+      const parts = s.split(':')
+      if (parts.length >= 2) {
+        const hh = parts[0].padStart(2, '0')
+        const mm = parts[1].padStart(2, '0')
+        const ss = parts[2] != null ? `:${String(parts[2]).padStart(2, '0')}` : ''
+        return `${hh}:${mm}${ss}`
+      }
+    }
+    return s
+  }
   const [formData, setFormData] = useState({
-    time: event?.time || '',
+    time: normalizeTimeForInput(event?.time) || '',
     title: event?.title || '',
     description: event?.description || '',
     icon: event?.icon || '',
-    order: event?.order || 0,
+    order: event?.order ?? 0,
     image_url: event?.image_url || '',
     additional_info: event?.additional_info || '',
   })
@@ -198,13 +213,25 @@ const EventForm = ({ event, onClose, onSave }) => {
         }
       }
 
-      // Convert empty strings to null for optional fields
+      // Normalize time to HH:MM:SS for backend
+      const timeStr = formData.time ? String(formData.time).trim() : ''
+      const timeNormalized = timeStr.includes(':')
+        ? (timeStr.split(':').length === 2 ? `${timeStr}:00` : timeStr)
+        : ''
+
+      // Ensure order is a valid integer
+      const orderNum = typeof formData.order === 'number' && !Number.isNaN(formData.order)
+        ? formData.order
+        : (parseInt(formData.order, 10) || 0)
+
       const dataToSend = {
-        ...formData,
+        time: timeNormalized || undefined,
+        title: formData.title?.trim() || undefined,
+        description: formData.description?.trim() || null,
+        icon: formData.icon?.trim() || null,
+        order: orderNum,
         image_url: uploadedImageUrl || null,
-        description: formData.description || null,
-        icon: formData.icon || null,
-        additional_info: formData.additional_info || null,
+        additional_info: formData.additional_info?.trim() || null,
       }
 
       if (event) {
@@ -213,7 +240,6 @@ const EventForm = ({ event, onClose, onSave }) => {
         await createTimelineEvent(dataToSend)
       }
       
-      // Reset form state
       setFile(null)
       setPreview(null)
       setImageInfo(null)
@@ -222,8 +248,10 @@ const EventForm = ({ event, onClose, onSave }) => {
       onSave()
       onClose()
     } catch (error) {
-      console.error('Error saving event:', error)
-      alert('Error saving event')
+      console.error('Error saving event:', error, error?.response?.data)
+      const msg = error?.response?.data?.detail || error?.message || 'Error saving event'
+      const detailStr = Array.isArray(msg) ? msg.map((e) => e.msg || e.loc?.join('.')).join(', ') : String(msg)
+      alert(detailStr || 'Error saving event')
     } finally {
       setSaving(false)
       setTimeout(() => setUploadProgress(null), 3000)
