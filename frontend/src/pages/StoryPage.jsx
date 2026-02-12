@@ -75,19 +75,19 @@ const StoryPage = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative overflow-hidden rounded-xl"
+                className="relative rounded-xl overflow-hidden bg-black/5"
               >
                 <img
                   src={normalizeImageUrl(image.image_url)}
                   alt={image.caption || 'Story image'}
-                  className="w-full h-64 object-cover"
+                  className="w-full h-auto block"
                   onError={(e) => {
                     console.error('Image failed to load:', image.image_url)
                   }}
                 />
                 {image.caption && (
-                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
-                    <p className="text-white font-body text-sm">{image.caption}</p>
+                  <div className="p-4 bg-champagne/80 border-t border-gold/20">
+                    <p className="font-body text-sm" style={{ color: 'var(--theme-body-heading)' }}>{image.caption}</p>
                   </div>
                 )}
               </motion.div>
