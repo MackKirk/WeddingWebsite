@@ -52,7 +52,7 @@ const RSVPForm = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         onSubmit={handleSubmit}
-        className="bg-gradient-to-br from-champagne/90 via-blush-pink/20 to-champagne/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-10 md:p-14 border border-gold/40 shadow-xl"
+        className="bg-champagne rounded-2xl md:rounded-3xl p-10 md:p-14 border border-gold/40 shadow-xl"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>

@@ -62,15 +62,7 @@ const Timeline = ({ events }) => {
                   setSelectedEvent(event)
                 }
               }}
-              className={`md:w-[45%] rounded-xl md:rounded-2xl p-6 md:p-8 border shadow-lg transition-all duration-300 relative ${
-                index % 4 === 0
-                  ? 'bg-champagne'
-                  : index % 4 === 1
-                  ? 'bg-blush-pink/30'
-                  : index % 4 === 2
-                  ? 'bg-dusty-rose/20'
-                  : 'bg-olive-green/10'
-              } ${(event.image_url || event.additional_info) ? 'cursor-pointer hover:shadow-xl hover:scale-[1.02]' : ''}`}
+              className={`md:w-[45%] rounded-xl md:rounded-2xl p-6 md:p-8 border shadow-lg transition-all duration-300 relative bg-champagne ${(event.image_url || event.additional_info) ? 'cursor-pointer hover:shadow-xl hover:scale-[1.02]' : ''}`}
               style={{ zIndex: 10, position: 'relative', borderColor: 'color-mix(in srgb, var(--theme-accent) 30%, transparent)' }}
               whileHover={(event.image_url || event.additional_info) ? { scale: 1.02 } : {}}
             >
