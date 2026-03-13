@@ -13,6 +13,13 @@ const DEFAULTS = {
   footerTextColor: '#8B6F6D',
 }
 
+const HERO_DEFAULTS = {
+  heroText: '',
+  heroImageUrl: '',
+  subtitle: '',
+  weddingDate: '',
+}
+
 const ThemeContext = createContext()
 
 export const useTheme = () => {
@@ -36,36 +43,46 @@ const setCssVariables = (theme) => {
   root.style.setProperty('--theme-footer-text', theme.footerTextColor || DEFAULTS.footerTextColor)
 }
 
+const fetchAndApply = async (setTheme, setHeroContent, setLoading) => {
+  try {
+    const response = await getHomeContent()
+    const data = response.data
+    const next = {
+      textColor: data.text_color ?? DEFAULTS.textColor,
+      navbarColor: data.navbar_color ?? DEFAULTS.navbarColor,
+      navbarTextColor: data.navbar_text_color ?? DEFAULTS.navbarTextColor,
+      accentColor: data.accent_color ?? DEFAULTS.accentColor,
+      bodyBgColor: data.body_bg_color ?? DEFAULTS.bodyBgColor,
+      bodyHeadingColor: data.body_heading_color ?? DEFAULTS.bodyHeadingColor,
+      bodyTextColor: data.body_text_color ?? DEFAULTS.bodyTextColor,
+      footerBgColor: data.footer_bg_color ?? DEFAULTS.footerBgColor,
+      footerTextColor: data.footer_text_color ?? DEFAULTS.footerTextColor,
+    }
+    setTheme(next)
+    setCssVariables(next)
+    setHeroContent({
+      heroText: data.hero_text ?? HERO_DEFAULTS.heroText,
+      heroImageUrl: data.hero_image_url ?? HERO_DEFAULTS.heroImageUrl,
+      subtitle: data.subtitle ?? HERO_DEFAULTS.subtitle,
+      weddingDate: data.wedding_date ?? HERO_DEFAULTS.weddingDate,
+    })
+  } catch (error) {
+    console.error('Error fetching theme:', error)
+    setCssVariables(DEFAULTS)
+  } finally {
+    if (setLoading) setLoading(false)
+  }
+}
+
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(DEFAULTS)
+  const [heroContent, setHeroContent] = useState(HERO_DEFAULTS)
   const [loading, setLoading] = useState(true)
 
+  const refreshTheme = () => fetchAndApply(setTheme, setHeroContent, null)
+
   useEffect(() => {
-    const fetchTheme = async () => {
-      try {
-        const response = await getHomeContent()
-        const data = response.data
-        const next = {
-          textColor: data.text_color ?? DEFAULTS.textColor,
-          navbarColor: data.navbar_color ?? DEFAULTS.navbarColor,
-          navbarTextColor: data.navbar_text_color ?? DEFAULTS.navbarTextColor,
-          accentColor: data.accent_color ?? DEFAULTS.accentColor,
-          bodyBgColor: data.body_bg_color ?? DEFAULTS.bodyBgColor,
-          bodyHeadingColor: data.body_heading_color ?? DEFAULTS.bodyHeadingColor,
-          bodyTextColor: data.body_text_color ?? DEFAULTS.bodyTextColor,
-          footerBgColor: data.footer_bg_color ?? DEFAULTS.footerBgColor,
-          footerTextColor: data.footer_text_color ?? DEFAULTS.footerTextColor,
-        }
-        setTheme(next)
-        setCssVariables(next)
-      } catch (error) {
-        console.error('Error fetching theme:', error)
-        setCssVariables(DEFAULTS)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchTheme()
+    fetchAndApply(setTheme, setHeroContent, setLoading)
   }, [])
 
   // Keep CSS variables in sync when theme updates (e.g. after admin save from another tab)
@@ -74,7 +91,7 @@ export const ThemeProvider = ({ children }) => {
   }, [theme])
 
   return (
-    <ThemeContext.Provider value={{ ...theme, loading }}>
+    <ThemeContext.Provider value={{ ...theme, ...heroContent, loading, refreshTheme }}>
       {children}
     </ThemeContext.Provider>
   )

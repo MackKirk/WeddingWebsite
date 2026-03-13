@@ -101,7 +101,7 @@ const HeroBanner = ({ heroText, heroImageUrl, subtitle, weddingDate, textColor }
               transition={{ duration: 0.8, delay: 0.7 }}
               className="text-xl md:text-2xl lg:text-3xl font-body text-white/95 italic font-light tracking-wide"
             >
-              {subtitle || 'Join us for our special day'}
+              {subtitle || 'June 27th, 2026'}
             </motion.p>
           </div>
         </div>

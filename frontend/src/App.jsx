@@ -1,8 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from './contexts/ThemeContext'
+import { EditorProvider } from './contexts/EditorContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import RSVPReminder from './components/RSVPReminder'
+import EditSiteFloatingButton from './components/EditSiteFloatingButton'
+import InlineEditDrawer from './components/InlineEditDrawer'
 import HomePage from './pages/HomePage'
 import StoryPage from './pages/StoryPage'
 import InfoPage from './pages/InfoPage'
@@ -31,7 +34,7 @@ function App() {
         <Route
           path="/*"
           element={
-            <>
+            <EditorProvider>
               <Navbar />
               <Routes>
                 <Route path="/" element={<HomePage />} />
@@ -44,7 +47,9 @@ function App() {
               </Routes>
               <Footer />
               <RSVPReminder />
-            </>
+              <EditSiteFloatingButton />
+              <InlineEditDrawer />
+            </EditorProvider>
           }
         />
       </Routes>
