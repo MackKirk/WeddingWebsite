@@ -124,13 +124,13 @@ const InfoPage = () => {
                 description={section.description}
               >
                 {isDressCodeWithGallery && (
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid grid-cols-4 gap-2 sm:gap-3">
                     {galleryUrls.map((url, index) => (
                       <button
                         key={`${url}-${index}`}
                         type="button"
                         onClick={() => openDressCodeLightbox(galleryUrls, index)}
-                        className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 border-gold/40 shadow-md hover:shadow-lg hover:scale-105 transition-all focus:outline-none focus:ring-2 focus:ring-gold/50"
+                        className="aspect-square w-full rounded-lg overflow-hidden border-2 border-gold/40 shadow-md hover:shadow-lg hover:scale-105 transition-all focus:outline-none focus:ring-2 focus:ring-gold/50"
                       >
                         <img
                           src={normalizeImageUrl(url)}
