@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import InfoCard, { InfoModal } from '../components/InfoCard'
+import { motion, AnimatePresence } from 'framer-motion'
+import InfoCard from '../components/InfoCard'
 import BlockColorEdit from '../components/BlockColorEdit'
+import Lightbox from '../components/Lightbox'
 import { getInfoSections } from '../services/content'
+import { normalizeImageUrl } from '../utils/imageUrl'
 import {
-  Calendar, MapPin, Shirt, Car, Hotel, Heart, Circle, Cake, Music,
+  Calendar, MapPin, Shirt, Car, Hotel, Heart, Cake, Music,
   UtensilsCrossed, Clock, Gift, Camera, Users, Home, Navigation,
   Building2, CarFront, ParkingCircle, BedDouble, Wifi, Phone,
-  Mail, Globe, Star, Sparkles, Flower2, Leaf, Sun, Moon, X
+  Mail, Globe, Star, Sparkles, Flower2, Leaf, Sun, Moon
 } from 'lucide-react'
 
 // Map icon names to Lucide React icons
@@ -56,7 +58,9 @@ const sectionTypeIconMap = {
 const InfoPage = () => {
   const [sections, setSections] = useState([])
   const [loading, setLoading] = useState(true)
-  const [selectedSection, setSelectedSection] = useState(null)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxImages, setLightboxImages] = useState([])
+  const [lightboxIndex, setLightboxIndex] = useState(0)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,15 +76,15 @@ const InfoPage = () => {
     fetchData()
   }, [])
 
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+  const openDressCodeLightbox = (galleryUrls, index) => {
+    const images = Array.isArray(galleryUrls) ? galleryUrls : []
+    setLightboxImages(images.map((url) => ({ image_url: url })))
+    setLightboxIndex(index)
+    setLightboxOpen(true)
   }
 
-  const handleCardClick = (section) => {
-    const hasDetails = section.map_embed_url || section.image_url || section.additional_info
-    if (hasDetails) {
-      setSelectedSection(section)
-    }
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>
   }
 
   return (
@@ -103,45 +107,57 @@ const InfoPage = () => {
           <BlockColorEdit blockKey="info" className="absolute top-0 right-0" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           {sections.map((section) => {
-            // Use custom icon if provided, otherwise fallback to section type icon
             let Icon = MapPin
             if (section.icon && iconNameMap[section.icon]) {
               Icon = iconNameMap[section.icon]
             } else if (sectionTypeIconMap[section.section_type]) {
               Icon = sectionTypeIconMap[section.section_type]
             }
+            const galleryUrls = section.gallery_urls && (Array.isArray(section.gallery_urls) ? section.gallery_urls : [])
+            const isDressCodeWithGallery = section.section_type === 'dress_code' && galleryUrls.length > 0
+
             return (
-              <InfoCard
-                key={section.id}
-                icon={Icon}
-                title={section.title}
-                description={section.description}
-                section={section}
-                onClick={() => handleCardClick(section)}
-              />
+              <div key={section.id} className="flex flex-col gap-4">
+                <InfoCard
+                  icon={Icon}
+                  title={section.title}
+                  description={section.description}
+                />
+                {isDressCodeWithGallery && (
+                  <div className="flex flex-wrap gap-2">
+                    {galleryUrls.map((url, index) => (
+                      <button
+                        key={`${url}-${index}`}
+                        type="button"
+                        onClick={() => openDressCodeLightbox(galleryUrls, index)}
+                        className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 border-gold/40 shadow-md hover:shadow-lg hover:scale-105 transition-all focus:outline-none focus:ring-2 focus:ring-gold/50"
+                      >
+                        <img
+                          src={normalizeImageUrl(url)}
+                          alt={`${section.title} ${index + 1}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => e.target.style.display = 'none'}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             )
           })}
           </div>
         </div>
       </div>
 
-      {/* Info Modal */}
-      {selectedSection && (() => {
-        let Icon = MapPin
-        if (selectedSection.icon && iconNameMap[selectedSection.icon]) {
-          Icon = iconNameMap[selectedSection.icon]
-        } else if (sectionTypeIconMap[selectedSection.section_type]) {
-          Icon = sectionTypeIconMap[selectedSection.section_type]
-        }
-        return (
-          <InfoModal
-            section={selectedSection}
-            icon={Icon}
-            isOpen={!!selectedSection}
-            onClose={() => setSelectedSection(null)}
+      <AnimatePresence>
+        {lightboxOpen && lightboxImages.length > 0 && (
+          <Lightbox
+            images={lightboxImages}
+            initialIndex={lightboxIndex}
+            onClose={() => setLightboxOpen(false)}
           />
-        )
-      })()}
+        )}
+      </AnimatePresence>
     </div>
   )
 }
