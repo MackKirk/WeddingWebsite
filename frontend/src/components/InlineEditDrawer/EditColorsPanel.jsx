@@ -9,6 +9,7 @@ const COLOR_DEFAULTS = {
   text_color: '#8B6F6D',
   navbar_color: '#F8F4EC',
   navbar_text_color: '#8B6F6D',
+  logo_text_color: '#D4B483',
   accent_color: '#D4B483',
   body_bg_color: '#F8F4EC',
   body_heading_color: '#8B6F6D',
@@ -21,6 +22,7 @@ const CSS_VAR_MAP = {
   text_color: '--theme-hero-text',
   navbar_color: '--theme-navbar-bg',
   navbar_text_color: '--theme-navbar-text',
+  logo_text_color: '--theme-logo-text',
   accent_color: '--theme-accent',
   body_bg_color: '--theme-body-bg',
   body_heading_color: '--theme-body-heading',
@@ -30,15 +32,16 @@ const CSS_VAR_MAP = {
 }
 
 const LABELS = {
-  text_color: 'Hero / títulos',
-  navbar_color: 'Fundo da barra',
-  navbar_text_color: 'Links do menu',
-  accent_color: 'Cor de destaque',
-  body_bg_color: 'Fundo das páginas',
-  body_heading_color: 'Títulos de seção',
-  body_text_color: 'Texto do corpo',
-  footer_bg_color: 'Fundo do rodapé',
-  footer_text_color: 'Texto do rodapé',
+  text_color: 'Hero / titles',
+  navbar_color: 'Navbar background',
+  navbar_text_color: 'Menu links',
+  logo_text_color: 'Logo text (menu)',
+  accent_color: 'Accent color',
+  body_bg_color: 'Page background',
+  body_heading_color: 'Section headings',
+  body_text_color: 'Body text',
+  footer_bg_color: 'Footer background',
+  footer_text_color: 'Footer text',
 }
 
 const applyPreview = (colors) => {
@@ -73,6 +76,7 @@ const EditColorsPanel = () => {
           text_color: d.text_color || COLOR_DEFAULTS.text_color,
           navbar_color: d.navbar_color ?? COLOR_DEFAULTS.navbar_color,
           navbar_text_color: d.navbar_text_color ?? COLOR_DEFAULTS.navbar_text_color,
+          logo_text_color: d.logo_text_color ?? COLOR_DEFAULTS.logo_text_color,
           accent_color: d.accent_color ?? COLOR_DEFAULTS.accent_color,
           body_bg_color: d.body_bg_color ?? COLOR_DEFAULTS.body_bg_color,
           body_heading_color: d.body_heading_color ?? COLOR_DEFAULTS.body_heading_color,
@@ -107,7 +111,7 @@ const EditColorsPanel = () => {
       closePanel()
     } catch (err) {
       console.error('Error saving:', err)
-      alert('Erro ao salvar. Tente novamente.')
+      alert('Error saving. Please try again.')
     } finally {
       setSaving(false)
     }
@@ -116,7 +120,7 @@ const EditColorsPanel = () => {
   if (loading) {
     return (
       <div className="p-8 text-center font-body text-dusty-rose/70">
-        Carregando...
+        Loading...
       </div>
     )
   }
@@ -124,7 +128,7 @@ const EditColorsPanel = () => {
   return (
     <form onSubmit={handleSubmit} className="p-6 space-y-4">
       <p className="text-sm text-dusty-rose/70 font-body mb-4">
-        Altere as cores e veja o preview em tempo real no site.
+        Change colors and see live preview on the site.
       </p>
       {Object.entries(LABELS).map(([key, label]) => (
         <div key={key} className="flex items-center gap-3">
@@ -153,7 +157,7 @@ const EditColorsPanel = () => {
           onClick={closePanel}
           className="flex-1 px-4 py-3 rounded-xl font-body font-medium border-2 border-gold/50 text-dusty-rose hover:bg-champagne/50 transition-colors"
         >
-          Cancelar
+          Cancel
         </button>
         <motion.button
           type="submit"
@@ -163,7 +167,7 @@ const EditColorsPanel = () => {
           whileTap={{ scale: 0.98 }}
         >
           <Save size={18} />
-          {saving ? 'Salvando...' : 'Salvar cores'}
+          {saving ? 'Saving...' : 'Save colors'}
         </motion.button>
       </div>
     </form>

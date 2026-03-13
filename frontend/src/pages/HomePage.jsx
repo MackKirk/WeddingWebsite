@@ -29,10 +29,10 @@ const HomePage = () => {
             type="button"
             onClick={() => openPanel('hero')}
             className="absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2.5 bg-champagne/95 border-2 border-gold/50 rounded-xl font-body text-sm font-semibold text-dusty-rose shadow-lg hover:bg-champagne hover:shadow-xl transition-all"
-            aria-label="Editar Hero"
+            aria-label="Edit Hero"
           >
             <Pencil size={18} />
-            Editar
+            Edit
           </button>
         )}
       </div>

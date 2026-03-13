@@ -7,6 +7,7 @@ const DEFAULTS = {
   textColor: '#8B6F6D',
   navbarColor: '#F8F4EC',
   navbarTextColor: '#8B6F6D',
+  logoTextColor: '#D4B483',
   accentColor: '#D4B483',
   bodyBgColor: '#F8F4EC',
   bodyHeadingColor: '#8B6F6D',
@@ -40,6 +41,7 @@ const setCssVariables = (theme) => {
   root.style.setProperty('--theme-hero-text', theme.textColor || DEFAULTS.textColor)
   root.style.setProperty('--theme-navbar-bg', theme.navbarColor || DEFAULTS.navbarColor)
   root.style.setProperty('--theme-navbar-text', theme.navbarTextColor || DEFAULTS.navbarTextColor)
+  root.style.setProperty('--theme-logo-text', theme.logoTextColor || DEFAULTS.logoTextColor)
   root.style.setProperty('--theme-accent', theme.accentColor || DEFAULTS.accentColor)
   root.style.setProperty('--theme-body-bg', theme.bodyBgColor || DEFAULTS.bodyBgColor)
   root.style.setProperty('--theme-body-heading', theme.bodyHeadingColor || DEFAULTS.bodyHeadingColor)
@@ -59,6 +61,7 @@ const fetchAndApply = async (setTheme, setHeroContent, setLoading) => {
       textColor: data.text_color ?? DEFAULTS.textColor,
       navbarColor: data.navbar_color ?? DEFAULTS.navbarColor,
       navbarTextColor: data.navbar_text_color ?? DEFAULTS.navbarTextColor,
+      logoTextColor: data.logo_text_color ?? DEFAULTS.logoTextColor,
       accentColor: data.accent_color ?? DEFAULTS.accentColor,
       bodyBgColor: data.body_bg_color ?? DEFAULTS.bodyBgColor,
       bodyHeadingColor: data.body_heading_color ?? DEFAULTS.bodyHeadingColor,

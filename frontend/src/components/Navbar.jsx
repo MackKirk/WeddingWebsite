@@ -7,9 +7,10 @@ import { useTheme } from '../contexts/ThemeContext'
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const location = useLocation()
-  const { navbarColor, navbarTextColor, accentColor } = useTheme()
+  const { navbarColor, navbarTextColor, logoTextColor, accentColor } = useTheme()
   const navBg = navbarColor || '#F8F4EC'
   const navText = navbarTextColor || '#8B6F6D'
+  const logoColor = logoTextColor || '#D4B483'
   const accent = accentColor || '#D4B483'
 
   const navLinks = [
@@ -33,7 +34,7 @@ const Navbar = () => {
       >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <Link to="/" className="text-2xl font-display font-semibold" style={{ color: accent }}>
+            <Link to="/" className="text-2xl font-display font-semibold" style={{ color: logoColor }}>
               Bianca & Joel Wedding
             </Link>
 

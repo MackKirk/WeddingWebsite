@@ -13,6 +13,7 @@ class HomeContent(Base):
     text_color = Column(String, nullable=True, default="#8B6F6D")  # Hero text / countdown
     navbar_color = Column(String, nullable=True, default="#F8F4EC")  # Navbar background
     navbar_text_color = Column(String, nullable=True, default="#8B6F6D")
+    logo_text_color = Column(String, nullable=True, default="#D4B483")  # Logo "Bianca & Joel Wedding" in navbar
     accent_color = Column(String, nullable=True, default="#D4B483")  # Buttons, links, highlights
     body_bg_color = Column(String, nullable=True, default="#F8F4EC")
     body_heading_color = Column(String, nullable=True, default="#8B6F6D")

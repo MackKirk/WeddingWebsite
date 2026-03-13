@@ -8,9 +8,10 @@ class RSVPBase(BaseModel):
     email: EmailStr
     num_attendees: int
     dietary_restrictions: Optional[str] = None
+    song_request: Optional[str] = None
     message: Optional[str] = None
     
-    @field_validator('dietary_restrictions', 'message', mode='before')
+    @field_validator('dietary_restrictions', 'song_request', 'message', mode='before')
     @classmethod
     def empty_str_to_none(cls, v: Union[str, None]) -> Optional[str]:
         """Convert empty strings to None"""

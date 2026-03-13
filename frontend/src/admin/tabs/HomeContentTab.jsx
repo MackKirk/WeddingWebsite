@@ -13,6 +13,7 @@ const HomeContentTab = () => {
     text_color: '#8B6F6D',
     navbar_color: '#F8F4EC',
     navbar_text_color: '#8B6F6D',
+    logo_text_color: '#D4B483',
     accent_color: '#D4B483',
     body_bg_color: '#F8F4EC',
     body_heading_color: '#8B6F6D',
@@ -41,6 +42,7 @@ const HomeContentTab = () => {
           text_color: data.text_color || '#8B6F6D',
           navbar_color: data.navbar_color || '#F8F4EC',
           navbar_text_color: data.navbar_text_color ?? '#8B6F6D',
+          logo_text_color: data.logo_text_color ?? '#D4B483',
           accent_color: data.accent_color ?? '#D4B483',
           body_bg_color: data.body_bg_color ?? '#F8F4EC',
           body_heading_color: data.body_heading_color ?? '#8B6F6D',
@@ -359,6 +361,13 @@ const HomeContentTab = () => {
                 <div className="flex items-center gap-4">
                   <input type="color" value={content.navbar_text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, navbar_text_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
                   <input type="text" value={content.navbar_text_color || '#8B6F6D'} onChange={(e) => setContent({ ...content, navbar_text_color: e.target.value })} placeholder="#8B6F6D" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-dusty-rose font-body font-medium mb-2">Logo text color (Bianca & Joel Wedding)</label>
+                <div className="flex items-center gap-4">
+                  <input type="color" value={content.logo_text_color || '#D4B483'} onChange={(e) => setContent({ ...content, logo_text_color: e.target.value })} className="w-20 h-12 rounded-lg border border-gold/40 cursor-pointer" />
+                  <input type="text" value={content.logo_text_color || '#D4B483'} onChange={(e) => setContent({ ...content, logo_text_color: e.target.value })} placeholder="#D4B483" className="flex-1 px-5 py-4 rounded-xl border border-gold/40 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 font-body" />
                 </div>
               </div>
             </div>

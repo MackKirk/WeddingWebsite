@@ -46,7 +46,10 @@ const RSVPTab = () => {
                   Attendees
                 </th>
                 <th className="text-left py-3 px-4 font-body font-semibold text-dusty-rose">
-                  Dietary Restrictions
+                  Food allergies
+                </th>
+                <th className="text-left py-3 px-4 font-body font-semibold text-dusty-rose">
+                  Song request
                 </th>
                 <th className="text-left py-3 px-4 font-body font-semibold text-dusty-rose">
                   Message
@@ -66,6 +69,9 @@ const RSVPTab = () => {
                   </td>
                   <td className="py-3 px-4 font-body text-dusty-rose/70">
                     {rsvp.dietary_restrictions || '-'}
+                  </td>
+                  <td className="py-3 px-4 font-body text-dusty-rose/70">
+                    {rsvp.song_request || '-'}
                   </td>
                   <td className="py-3 px-4 font-body text-dusty-rose/70">
                     {rsvp.message || '-'}

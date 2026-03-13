@@ -6,8 +6,8 @@ import EditHeroPanel from './EditHeroPanel'
 import EditColorsPanel from './EditColorsPanel'
 
 const PANEL_TITLES = {
-  hero: 'Editar Hero',
-  colors: 'Cores do site',
+  hero: 'Edit Hero',
+  colors: 'Site colors',
 }
 
 const InlineEditDrawer = () => {
@@ -45,7 +45,7 @@ const InlineEditDrawer = () => {
                 type="button"
                 onClick={closePanel}
                 className="p-2 rounded-full hover:bg-white/60 transition-colors text-dusty-rose"
-                aria-label="Fechar"
+                aria-label="Close"
               >
                 <X size={22} />
               </button>

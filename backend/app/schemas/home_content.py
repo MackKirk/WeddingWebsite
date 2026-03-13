@@ -11,6 +11,7 @@ class HomeContentBase(BaseModel):
     text_color: Optional[str] = None
     navbar_color: Optional[str] = None
     navbar_text_color: Optional[str] = None
+    logo_text_color: Optional[str] = None
     accent_color: Optional[str] = None
     body_bg_color: Optional[str] = None
     body_heading_color: Optional[str] = None
@@ -37,6 +38,7 @@ class HomeContentUpdate(BaseModel):
     text_color: Optional[str] = None
     navbar_color: Optional[str] = None
     navbar_text_color: Optional[str] = None
+    logo_text_color: Optional[str] = None
     accent_color: Optional[str] = None
     body_bg_color: Optional[str] = None
     body_heading_color: Optional[str] = None

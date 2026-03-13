@@ -46,7 +46,7 @@ const EditHeroPanel = () => {
       closePanel()
     } catch (err) {
       console.error('Error saving:', err)
-      alert('Erro ao salvar. Tente novamente.')
+      alert('Error saving. Please try again.')
     } finally {
       setSaving(false)
     }
@@ -55,7 +55,7 @@ const EditHeroPanel = () => {
   if (loading) {
     return (
       <div className="p-8 text-center font-body text-dusty-rose/70">
-        Carregando...
+        Loading...
       </div>
     )
   }
@@ -64,7 +64,7 @@ const EditHeroPanel = () => {
     <form onSubmit={handleSubmit} className="p-6 space-y-5">
       <div>
         <label className="block text-dusty-rose font-display font-medium mb-2 text-sm">
-          Nomes (Hero)
+          Names (Hero)
         </label>
         <input
           type="text"
@@ -76,7 +76,7 @@ const EditHeroPanel = () => {
       </div>
       <div>
         <label className="block text-dusty-rose font-display font-medium mb-2 text-sm">
-          Subtítulo
+          Subtitle
         </label>
         <input
           type="text"
@@ -88,7 +88,7 @@ const EditHeroPanel = () => {
       </div>
       <div>
         <label className="block text-dusty-rose font-display font-medium mb-2 text-sm">
-          Data do casamento
+          Wedding date
         </label>
         <input
           type="date"
@@ -99,7 +99,7 @@ const EditHeroPanel = () => {
       </div>
       <div>
         <label className="block text-dusty-rose font-display font-medium mb-2 text-sm">
-          URL da imagem do Hero
+          Hero image URL
         </label>
         <input
           type="url"
@@ -115,7 +115,7 @@ const EditHeroPanel = () => {
           onClick={closePanel}
           className="flex-1 px-4 py-3 rounded-xl font-body font-medium border-2 border-gold/50 text-dusty-rose hover:bg-champagne/50 transition-colors"
         >
-          Cancelar
+          Cancel
         </button>
         <motion.button
           type="submit"
@@ -125,7 +125,7 @@ const EditHeroPanel = () => {
           whileTap={{ scale: 0.98 }}
         >
           <Save size={18} />
-          {saving ? 'Salvando...' : 'Salvar'}
+          {saving ? 'Saving...' : 'Save'}
         </motion.button>
       </div>
     </form>

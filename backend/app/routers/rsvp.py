@@ -21,6 +21,8 @@ def create_rsvp(rsvp: RSVPCreate, db: Session = Depends(get_db)):
         # Convert empty strings to None
         if rsvp_data.get('dietary_restrictions') == '':
             rsvp_data['dietary_restrictions'] = None
+        if rsvp_data.get('song_request') == '':
+            rsvp_data['song_request'] = None
         if rsvp_data.get('message') == '':
             rsvp_data['message'] = None
         

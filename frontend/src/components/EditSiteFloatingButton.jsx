@@ -24,7 +24,7 @@ const EditSiteFloatingButton = () => {
               className="flex items-center gap-2 px-4 py-2.5 bg-champagne border-2 rounded-xl font-body text-sm font-medium shadow-lg hover:shadow-xl transition-all border-gold/50 text-dusty-rose hover:bg-champagne/90"
             >
               <Image size={18} />
-              Editar Hero
+              Edit Hero
             </button>
             <button
               type="button"
@@ -32,7 +32,7 @@ const EditSiteFloatingButton = () => {
               className="flex items-center gap-2 px-4 py-2.5 bg-champagne border-2 rounded-xl font-body text-sm font-medium shadow-lg hover:shadow-xl transition-all border-gold/50 text-dusty-rose hover:bg-champagne/90"
             >
               <Palette size={18} />
-              Editar cores
+              Edit colors
             </button>
           </motion.div>
         )}
@@ -51,12 +51,12 @@ const EditSiteFloatingButton = () => {
         {editMode ? (
           <>
             <X size={18} />
-            Sair do modo edição
+            Exit edit mode
           </>
         ) : (
           <>
             <Pencil size={18} />
-            Editar site
+            Edit site
           </>
         )}
       </motion.button>

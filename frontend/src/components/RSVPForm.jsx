@@ -9,6 +9,7 @@ const RSVPForm = () => {
     email: '',
     num_attendees: 1,
     dietary_restrictions: '',
+    song_request: '',
     message: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -25,6 +26,7 @@ const RSVPForm = () => {
         email: formData.email.trim(),
         num_attendees: parseInt(formData.num_attendees) || 1,
         dietary_restrictions: formData.dietary_restrictions?.trim() || null,
+        song_request: formData.song_request?.trim() || null,
         message: formData.message?.trim() || null,
       }
       await createRSVP(cleanedData)
@@ -35,6 +37,7 @@ const RSVPForm = () => {
         email: '',
         num_attendees: 1,
         dietary_restrictions: '',
+        song_request: '',
         message: '',
       })
     } catch (error) {
@@ -98,16 +101,29 @@ const RSVPForm = () => {
 
           <div>
             <label className="block text-dusty-rose font-display italic text-lg mb-2">
-              Dietary Restrictions
+              Food allergies / dietary requirements
             </label>
             <input
               type="text"
               value={formData.dietary_restrictions}
               onChange={(e) => setFormData({ ...formData, dietary_restrictions: e.target.value })}
               className="w-full px-5 py-4 rounded-xl border border-gold/50 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold font-body transition-all duration-300"
-              placeholder="e.g., Vegetarian, Gluten-free"
+              placeholder="e.g., Nuts, Gluten-free"
             />
           </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-dusty-rose font-display italic text-lg mb-2">
+            Request a song
+          </label>
+          <input
+            type="text"
+            value={formData.song_request}
+            onChange={(e) => setFormData({ ...formData, song_request: e.target.value })}
+            className="w-full px-5 py-4 rounded-xl border border-gold/50 bg-white/60 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold font-body transition-all duration-300"
+            placeholder="A song you'd love to hear at the reception..."
+          />
         </div>
 
         <div className="mb-6">

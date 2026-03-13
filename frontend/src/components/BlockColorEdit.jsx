@@ -6,9 +6,9 @@ import { useTheme } from '../contexts/ThemeContext'
 import { getHomeContent, updateHomeContent } from '../services/content'
 
 const BLOCK_KEYS = {
-  timeline: { apiKey: 'card_bg_timeline', themeKey: 'cardBgTimeline', label: 'Cor dos cards (Timeline)' },
-  info: { apiKey: 'card_bg_info', themeKey: 'cardBgInfo', label: 'Cor dos cards (Informação)' },
-  rsvp: { apiKey: 'card_bg_rsvp', themeKey: 'cardBgRsvp', label: 'Cor do bloco (RSVP)' },
+  timeline: { apiKey: 'card_bg_timeline', themeKey: 'cardBgTimeline', label: 'Card color (Timeline)' },
+  info: { apiKey: 'card_bg_info', themeKey: 'cardBgInfo', label: 'Card color (Information)' },
+  rsvp: { apiKey: 'card_bg_rsvp', themeKey: 'cardBgRsvp', label: 'Block color (RSVP)' },
 }
 
 const BlockColorEdit = ({ blockKey, className = '' }) => {
@@ -44,7 +44,7 @@ const BlockColorEdit = ({ blockKey, className = '' }) => {
       setOpen(false)
     } catch (err) {
       console.error('Error saving block color:', err)
-      alert('Erro ao salvar. Tente novamente.')
+      alert('Error saving. Please try again.')
     } finally {
       setSaving(false)
     }
@@ -58,7 +58,7 @@ const BlockColorEdit = ({ blockKey, className = '' }) => {
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="absolute top-2 right-2 z-20 p-2 rounded-lg bg-white/95 border border-gold/50 text-dusty-rose shadow-md hover:bg-champagne hover:shadow-lg transition-all"
-        aria-label={`Editar cor - ${config.label}`}
+        aria-label={`Edit color - ${config.label}`}
       >
         <Pencil size={16} />
       </button>
@@ -85,7 +85,7 @@ const BlockColorEdit = ({ blockKey, className = '' }) => {
             disabled={saving}
             className="w-full py-2 rounded-lg font-body text-sm font-semibold bg-gradient-to-r from-gold/70 to-gold/90 text-white disabled:opacity-50"
           >
-            {saving ? 'Salvando...' : 'Aplicar'}
+            {saving ? 'Saving...' : 'Apply'}
           </button>
         </div>
       )}

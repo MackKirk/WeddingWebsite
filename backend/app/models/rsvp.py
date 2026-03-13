@@ -11,6 +11,7 @@ class RSVP(Base):
     email = Column(String)
     num_attendees = Column(Integer)
     dietary_restrictions = Column(Text, nullable=True)
+    song_request = Column(Text, nullable=True)
     message = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
