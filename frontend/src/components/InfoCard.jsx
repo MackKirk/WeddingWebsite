@@ -4,6 +4,7 @@ const InfoCard = ({
   icon: Icon,
   title,
   description,
+  children,
   className = '',
 }) => {
   return (
@@ -31,6 +32,7 @@ const InfoCard = ({
       <h3 className="text-3xl md:text-4xl font-display mb-6 leading-tight tracking-wide" style={{ color: 'var(--theme-body-heading)' }}>
         {title}
       </h3>
+      {children && <div className="mb-6">{children}</div>}
       {description && (
         <p className="font-body leading-relaxed text-lg mb-4 opacity-75 whitespace-pre-wrap" style={{ color: 'var(--theme-body-heading)' }}>{description}</p>
       )}

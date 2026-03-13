@@ -117,12 +117,12 @@ const InfoPage = () => {
             const isDressCodeWithGallery = section.section_type === 'dress_code' && galleryUrls.length > 0
 
             return (
-              <div key={section.id} className="flex flex-col gap-4">
-                <InfoCard
-                  icon={Icon}
-                  title={section.title}
-                  description={section.description}
-                />
+              <InfoCard
+                key={section.id}
+                icon={Icon}
+                title={section.title}
+                description={section.description}
+              >
                 {isDressCodeWithGallery && (
                   <div className="flex flex-wrap gap-2">
                     {galleryUrls.map((url, index) => (
@@ -142,7 +142,7 @@ const InfoPage = () => {
                     ))}
                   </div>
                 )}
-              </div>
+              </InfoCard>
             )
           })}
           </div>
