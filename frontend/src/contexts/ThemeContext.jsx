@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { getHomeContent } from '../services/content'
 
+const CARD_BG_DEFAULT = '#F5E6D3' // champagne
+
 const DEFAULTS = {
   textColor: '#8B6F6D',
   navbarColor: '#F8F4EC',
@@ -11,6 +13,9 @@ const DEFAULTS = {
   bodyTextColor: '#333333',
   footerBgColor: '#CFA7A4',
   footerTextColor: '#8B6F6D',
+  cardBgTimeline: CARD_BG_DEFAULT,
+  cardBgInfo: CARD_BG_DEFAULT,
+  cardBgRsvp: CARD_BG_DEFAULT,
 }
 
 const HERO_DEFAULTS = {
@@ -41,6 +46,9 @@ const setCssVariables = (theme) => {
   root.style.setProperty('--theme-body-text', theme.bodyTextColor || DEFAULTS.bodyTextColor)
   root.style.setProperty('--theme-footer-bg', theme.footerBgColor || DEFAULTS.footerBgColor)
   root.style.setProperty('--theme-footer-text', theme.footerTextColor || DEFAULTS.footerTextColor)
+  root.style.setProperty('--theme-card-bg-timeline', theme.cardBgTimeline || CARD_BG_DEFAULT)
+  root.style.setProperty('--theme-card-bg-info', theme.cardBgInfo || CARD_BG_DEFAULT)
+  root.style.setProperty('--theme-card-bg-rsvp', theme.cardBgRsvp || CARD_BG_DEFAULT)
 }
 
 const fetchAndApply = async (setTheme, setHeroContent, setLoading) => {
@@ -57,6 +65,9 @@ const fetchAndApply = async (setTheme, setHeroContent, setLoading) => {
       bodyTextColor: data.body_text_color ?? DEFAULTS.bodyTextColor,
       footerBgColor: data.footer_bg_color ?? DEFAULTS.footerBgColor,
       footerTextColor: data.footer_text_color ?? DEFAULTS.footerTextColor,
+      cardBgTimeline: data.card_bg_timeline ?? CARD_BG_DEFAULT,
+      cardBgInfo: data.card_bg_info ?? CARD_BG_DEFAULT,
+      cardBgRsvp: data.card_bg_rsvp ?? CARD_BG_DEFAULT,
     }
     setTheme(next)
     setCssVariables(next)

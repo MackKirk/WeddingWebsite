@@ -17,6 +17,9 @@ class HomeContentBase(BaseModel):
     body_text_color: Optional[str] = None
     footer_bg_color: Optional[str] = None
     footer_text_color: Optional[str] = None
+    card_bg_timeline: Optional[str] = None
+    card_bg_info: Optional[str] = None
+    card_bg_rsvp: Optional[str] = None
 
 
 class HomeContent(HomeContentBase):
@@ -40,4 +43,7 @@ class HomeContentUpdate(BaseModel):
     body_text_color: Optional[str] = None
     footer_bg_color: Optional[str] = None
     footer_text_color: Optional[str] = None
+    card_bg_timeline: Optional[str] = None
+    card_bg_info: Optional[str] = None
+    card_bg_rsvp: Optional[str] = None
 

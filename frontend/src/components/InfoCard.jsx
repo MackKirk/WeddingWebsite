@@ -21,10 +21,10 @@ const InfoCard = ({
         transition={{ duration: 0.5, ease: 'easeOut' }}
         whileHover={{ scale: 1.02, y: -4 }}
         onClick={hasDetails ? onClick : undefined}
-        className={`relative bg-champagne rounded-2xl md:rounded-3xl p-10 md:p-12 border shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden ${
+        className={`relative rounded-2xl md:rounded-3xl p-10 md:p-12 border shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden ${
           hasDetails ? 'cursor-pointer' : ''
         } ${className}`}
-        style={{ borderColor: 'color-mix(in srgb, var(--theme-accent) 40%, transparent)' }}
+        style={{ borderColor: 'color-mix(in srgb, var(--theme-accent) 40%, transparent)', backgroundColor: 'var(--theme-card-bg-info)' }}
       >
         {/* Floral decoration */}
         <div className="absolute top-0 right-0 w-32 h-32 opacity-5 pointer-events-none" style={{ color: 'var(--theme-accent)' }}>

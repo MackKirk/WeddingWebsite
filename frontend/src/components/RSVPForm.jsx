@@ -52,7 +52,8 @@ const RSVPForm = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         onSubmit={handleSubmit}
-        className="bg-champagne rounded-2xl md:rounded-3xl p-10 md:p-14 border border-gold/40 shadow-xl"
+        className="rounded-2xl md:rounded-3xl p-10 md:p-14 border border-gold/40 shadow-xl"
+        style={{ backgroundColor: 'var(--theme-card-bg-rsvp)' }}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>

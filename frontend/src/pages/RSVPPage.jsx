@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion'
 import RSVPForm from '../components/RSVPForm'
+import BlockColorEdit from '../components/BlockColorEdit'
 
 const RSVPPage = () => {
   return (
     <div className="min-h-screen pt-20 pb-20">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto relative">
+          <BlockColorEdit blockKey="rsvp" className="absolute -top-2 right-0" />
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}

@@ -19,4 +19,7 @@ class HomeContent(Base):
     body_text_color = Column(String, nullable=True, default="#333333")
     footer_bg_color = Column(String, nullable=True, default="#CFA7A4")  # Footer background (use with opacity in frontend)
     footer_text_color = Column(String, nullable=True, default="#8B6F6D")
+    card_bg_timeline = Column(String, nullable=True, default="#F5E6D3")  # Timeline cards background
+    card_bg_info = Column(String, nullable=True, default="#F5E6D3")    # Info section cards background
+    card_bg_rsvp = Column(String, nullable=True, default="#F5E6D3")    # RSVP form block background
 

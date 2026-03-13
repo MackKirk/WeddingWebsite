@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import InfoCard, { InfoModal } from '../components/InfoCard'
+import BlockColorEdit from '../components/BlockColorEdit'
 import { getInfoSections } from '../services/content'
 import {
   Calendar, MapPin, Shirt, Car, Hotel, Heart, Circle, Cake, Music,
@@ -98,7 +99,9 @@ const InfoPage = () => {
           <p className="text-dusty-rose/60 font-body text-lg italic font-light">Everything you need to know</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <div className="relative">
+          <BlockColorEdit blockKey="info" className="absolute top-0 right-0" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           {sections.map((section) => {
             // Use custom icon if provided, otherwise fallback to section type icon
             let Icon = MapPin
@@ -118,6 +121,7 @@ const InfoPage = () => {
               />
             )
           })}
+          </div>
         </div>
       </div>
 

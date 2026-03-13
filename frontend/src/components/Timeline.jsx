@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LucideIcon, X, Clock, Heart, Cake, Music, UtensilsCrossed } from 'lucide-react'
 import { normalizeImageUrl } from '../utils/imageUrl'
+import BlockColorEdit from './BlockColorEdit'
 
 // Icon mapping for timeline events
 const iconMap = {
@@ -18,14 +19,18 @@ const Timeline = ({ events }) => {
   const [selectedEvent, setSelectedEvent] = useState(null)
   if (!events || events.length === 0) {
     return (
-      <div className="text-center py-20">
-        <p className="font-body opacity-60" style={{ color: 'var(--theme-body-heading)' }}>No timeline events yet.</p>
+      <div className="relative max-w-5xl mx-auto px-4 py-12">
+        <BlockColorEdit blockKey="timeline" className="absolute top-4 right-4" />
+        <div className="text-center py-20">
+          <p className="font-body opacity-60" style={{ color: 'var(--theme-body-heading)' }}>No timeline events yet.</p>
+        </div>
       </div>
     )
   }
 
   return (
     <div className="relative max-w-5xl mx-auto px-4 py-12">
+      <BlockColorEdit blockKey="timeline" className="absolute top-4 right-4" />
       {/* Vertical Line */}
       <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full hidden md:block" style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--theme-accent) 50%, transparent), var(--theme-accent), color-mix(in srgb, var(--theme-accent) 50%, transparent))' }} />
 
@@ -62,8 +67,8 @@ const Timeline = ({ events }) => {
                   setSelectedEvent(event)
                 }
               }}
-              className={`md:w-[45%] rounded-xl md:rounded-2xl p-6 md:p-8 border shadow-lg transition-all duration-300 relative bg-champagne ${(event.image_url || event.additional_info) ? 'cursor-pointer hover:shadow-xl hover:scale-[1.02]' : ''}`}
-              style={{ zIndex: 10, position: 'relative', borderColor: 'color-mix(in srgb, var(--theme-accent) 30%, transparent)' }}
+              className={`md:w-[45%] rounded-xl md:rounded-2xl p-6 md:p-8 border shadow-lg transition-all duration-300 relative ${(event.image_url || event.additional_info) ? 'cursor-pointer hover:shadow-xl hover:scale-[1.02]' : ''}`}
+              style={{ zIndex: 10, position: 'relative', borderColor: 'color-mix(in srgb, var(--theme-accent) 30%, transparent)', backgroundColor: 'var(--theme-card-bg-timeline)' }}
               whileHover={(event.image_url || event.additional_info) ? { scale: 1.02 } : {}}
             >
               <div className="flex items-start gap-4" onClick={(e) => e.stopPropagation()}>
