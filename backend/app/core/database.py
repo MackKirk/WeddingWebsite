@@ -6,6 +6,9 @@ import sys
 
 Base = declarative_base()
 
+# Ensure all models register with Base.metadata (for create_all)
+from app.models.guest_invitation import GuestInvitation  # noqa: E402, F401
+
 # Criar engine com tratamento de erro
 try:
     connect_args = {"check_same_thread": False} if "sqlite" in settings.DATABASE_URL else {}

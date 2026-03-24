@@ -144,6 +144,7 @@ routers_to_load = [
     ('gallery', 'gallery'),
     ('gifts', 'gifts'),
     ('rsvp', 'rsvp'),
+    ('guest_invitations', 'guest_invitations'),
     ('upload', 'upload'),
     ('seed', 'seed'),
 ]

@@ -11,6 +11,7 @@ import {
   Image,
   Gift,
   Mail,
+  Users,
   LogOut,
   Settings,
   Sparkles,
@@ -23,6 +24,7 @@ import TimelineTab from './tabs/TimelineTab'
 import GalleryTab from './tabs/GalleryTab'
 import GiftsTab from './tabs/GiftsTab'
 import RSVPTab from './tabs/RSVPTab'
+import GuestListTab from './tabs/GuestListTab'
 
 const tabs = [
   { id: 'home', label: 'Home Content', icon: Home, component: HomeContentTab },
@@ -31,6 +33,7 @@ const tabs = [
   { id: 'timeline', label: 'Timeline', icon: Clock, component: TimelineTab },
   { id: 'gallery', label: 'Gallery', icon: Image, component: GalleryTab },
   { id: 'gifts', label: 'Gifts', icon: Gift, component: GiftsTab },
+  { id: 'guestlist', label: 'Guest list', icon: Users, component: GuestListTab },
   { id: 'rsvp', label: 'RSVPs', icon: Mail, component: RSVPTab },
 ]
 

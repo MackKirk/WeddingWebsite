@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 # Import all models
 from app.models import (
     home_content, story_section, story_image, wedding_info_section,
-    timeline_event, gallery_image, gift_item, rsvp, admin_user
+    timeline_event, gallery_image, gift_item, rsvp, admin_user, guest_invitation
 )
 
 # this is the Alembic Config object

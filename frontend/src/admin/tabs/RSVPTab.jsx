@@ -2,6 +2,17 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { getRSVPs } from '../../services/content'
 
+function formatAttendanceDetail(attendanceJson) {
+  if (!attendanceJson) return null
+  try {
+    const arr = JSON.parse(attendanceJson)
+    if (!Array.isArray(arr)) return null
+    return arr.map((a) => `${a.name}: ${a.attending ? 'Yes' : 'No'}`).join('; ')
+  } catch {
+    return null
+  }
+}
+
 const RSVPTab = () => {
   const [rsvps, setRsvps] = useState([])
   const [loading, setLoading] = useState(true)
@@ -46,6 +57,9 @@ const RSVPTab = () => {
                   Attendees
                 </th>
                 <th className="text-left py-3 px-4 font-body font-semibold text-dusty-rose">
+                  Per person
+                </th>
+                <th className="text-left py-3 px-4 font-body font-semibold text-dusty-rose">
                   Food allergies
                 </th>
                 <th className="text-left py-3 px-4 font-body font-semibold text-dusty-rose">
@@ -66,6 +80,9 @@ const RSVPTab = () => {
                   <td className="py-3 px-4 font-body text-dusty-rose/70">{rsvp.email}</td>
                   <td className="py-3 px-4 font-body text-dusty-rose/70">
                     {rsvp.num_attendees}
+                  </td>
+                  <td className="py-3 px-4 font-body text-dusty-rose/70 text-sm max-w-xs">
+                    {formatAttendanceDetail(rsvp.attendance_json) || '—'}
                   </td>
                   <td className="py-3 px-4 font-body text-dusty-rose/70">
                     {rsvp.dietary_restrictions || '-'}

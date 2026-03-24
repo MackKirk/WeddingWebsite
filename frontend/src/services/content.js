@@ -48,6 +48,14 @@ export const deleteGiftItem = (id) => api.delete(`/api/gifts/${id}`)
 export const createRSVP = (data) => api.post('/api/rsvp', data)
 export const getRSVPs = () => api.get('/api/rsvp')
 
+// Guest invitations (RSVP list)
+export const searchGuestInvitations = (q) =>
+  api.get('/api/guest-invitations/search', { params: { q } })
+export const previewGuestListParse = (data) =>
+  api.post('/api/guest-invitations/admin/preview-parse', data)
+export const replaceGuestInvitations = (data) =>
+  api.put('/api/guest-invitations/admin/replace-all', data)
+
 // Upload (auth required: ensure Bearer token is always sent)
 export const uploadFile = (file) => {
   const formData = new FormData()
