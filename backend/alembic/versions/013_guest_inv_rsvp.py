@@ -1,6 +1,6 @@
 """Guest invitations table + RSVP attendance and FK
 
-Revision ID: 013_guest_invitations_and_rsvp_attendance
+Revision ID: 013_guest_inv_rsvp
 Revises: 012_add_rsvp_song_request
 Create Date: 2025-02-18 12:00:00.000000
 
@@ -9,7 +9,7 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision = "013_guest_invitations_and_rsvp_attendance"
+revision = "013_guest_inv_rsvp"
 down_revision = "012_add_rsvp_song_request"
 branch_labels = None
 depends_on = None
