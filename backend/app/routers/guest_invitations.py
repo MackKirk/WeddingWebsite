@@ -53,6 +53,23 @@ def search_guest_invitations(
     return out
 
 
+@router.get("/admin/all", response_model=List[GuestInvitationOut])
+def list_all_guest_invitations(
+    db: Session = Depends(get_db),
+    current_user: AdminUser = Depends(get_current_user),
+):
+    """Full list for admin editing (not exposed publicly)."""
+    rows = db.query(GuestInvitation).order_by(GuestInvitation.display_label.asc()).all()
+    return [
+        GuestInvitationOut(
+            id=inv.id,
+            display_label=inv.display_label,
+            participants=_participants_list(inv),
+        )
+        for inv in rows
+    ]
+
+
 @router.post("/admin/preview-parse", response_model=PreviewParseResponse)
 def preview_parse(
     body: PreviewParseRequest,

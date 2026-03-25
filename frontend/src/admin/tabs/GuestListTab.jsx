@@ -1,25 +1,50 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Save, Sparkles } from 'lucide-react'
-import { previewGuestListParse, replaceGuestInvitations } from '../../services/content'
+import {
+  previewGuestListParse,
+  replaceGuestInvitations,
+  getGuestInvitations,
+} from '../../services/content'
+
+const mapApiRows = (list) =>
+  (list || []).map((r) => ({
+    display_label: r.display_label,
+    participants: [...(r.participants || [])],
+  }))
 
 const GuestListTab = () => {
   const [pasteText, setPasteText] = useState('')
   const [rows, setRows] = useState([])
   const [saving, setSaving] = useState(false)
   const [parsing, setParsing] = useState(false)
+  const [loadingList, setLoadingList] = useState(true)
+
+  const loadCurrentList = useCallback(async () => {
+    setLoadingList(true)
+    try {
+      const res = await getGuestInvitations()
+      const mapped = mapApiRows(res.data)
+      setRows(mapped)
+      setPasteText(mapped.map((r) => r.display_label).join('\n'))
+    } catch (e) {
+      console.error(e)
+      alert('Could not load the current guest list.')
+    } finally {
+      setLoadingList(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadCurrentList()
+  }, [loadCurrentList])
 
   const handleAnalyze = async () => {
     if (!pasteText.trim()) return
     setParsing(true)
     try {
       const res = await previewGuestListParse({ text: pasteText })
-      setRows(
-        (res.data.rows || []).map((r) => ({
-          display_label: r.display_label,
-          participants: [...(r.participants || [])],
-        }))
-      )
+      setRows(mapApiRows(res.data.rows))
     } catch (e) {
       console.error(e)
       alert('Failed to parse preview')
@@ -85,6 +110,7 @@ const GuestListTab = () => {
     try {
       await replaceGuestInvitations({ invitations })
       alert('Guest list saved.')
+      await loadCurrentList()
     } catch (e) {
       console.error(e)
       alert('Failed to save guest list')
@@ -97,11 +123,16 @@ const GuestListTab = () => {
     <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-10 md:p-12 border border-gold/20">
       <h2 className="text-4xl font-display text-dusty-rose mb-4 tracking-wide">Guest list (RSVP)</h2>
       <p className="text-dusty-rose/70 font-body mb-8 max-w-3xl">
-        Paste one line per invitation. Click Analyze to parse names, review and edit each row, then Save.
-        This replaces the full list used for RSVP autocomplete.
+        The list below loads what is already saved. You can edit rows directly, paste a new list and use
+        Analyze to replace the review grid, or Save to update the database. The saved list powers RSVP
+        autocomplete.
       </p>
 
-      <div className="mb-8">
+      {loadingList ? (
+        <p className="text-dusty-rose/80 font-body mb-8">Loading guest list…</p>
+      ) : null}
+
+      <div className={`mb-8 ${loadingList ? 'opacity-50 pointer-events-none' : ''}`}>
         <label className="block text-dusty-rose font-body font-medium mb-2">Paste guest list</label>
         <textarea
           value={pasteText}
@@ -123,7 +154,11 @@ const GuestListTab = () => {
         </motion.button>
       </div>
 
-      {rows.length > 0 && (
+      {!loadingList && rows.length === 0 && (
+        <p className="text-dusty-rose/60 font-body mb-6">No invitations yet. Paste a list below and click Analyze.</p>
+      )}
+
+      {!loadingList && rows.length > 0 && (
         <>
           <h3 className="text-2xl font-display text-dusty-rose mb-4">Review & edit</h3>
           <div className="space-y-6">

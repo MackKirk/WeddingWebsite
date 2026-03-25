@@ -55,6 +55,7 @@ export const previewGuestListParse = (data) =>
   api.post('/api/guest-invitations/admin/preview-parse', data)
 export const replaceGuestInvitations = (data) =>
   api.put('/api/guest-invitations/admin/replace-all', data)
+export const getGuestInvitations = () => api.get('/api/guest-invitations/admin/all')
 
 // Upload (auth required: ensure Bearer token is always sent)
 export const uploadFile = (file) => {
