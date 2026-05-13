@@ -75,6 +75,7 @@ def create_rsvp(rsvp: RSVPCreate, db: Session = Depends(get_db)):
             rsvp_data["num_attendees"] = num_yes
             rsvp_data["attendance_json"] = json.dumps(attendance)
             rsvp_data.pop("attendance", None)
+            # Do not store guest_invitation_id: list rows change; RSVP is a snapshot (guest_name + attendance_json).
         else:
             rsvp_data["num_attendees"] = rsvp_data.get("num_attendees") or 1
             if rsvp_data["num_attendees"] < 1:
@@ -90,7 +91,7 @@ def create_rsvp(rsvp: RSVPCreate, db: Session = Depends(get_db)):
             dietary_restrictions=rsvp_data.get("dietary_restrictions"),
             song_request=rsvp_data.get("song_request"),
             message=rsvp_data.get("message"),
-            guest_invitation_id=rsvp_data.get("guest_invitation_id"),
+            guest_invitation_id=None,
             attendance_json=rsvp_data.get("attendance_json"),
         )
         db.add(db_rsvp)

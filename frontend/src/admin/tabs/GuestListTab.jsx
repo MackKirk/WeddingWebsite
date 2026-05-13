@@ -104,7 +104,13 @@ const GuestListTab = () => {
       alert('Add at least one invitation with a name and participants.')
       return
     }
-    if (!confirm(`Replace the entire guest list with ${invitations.length} invitations?`)) return
+    if (
+      !confirm(
+        `Save ${invitations.length} invitations and replace the current list?\n\n` +
+          'Past RSVPs keep the names and Yes/No answers from when guests submitted; only this autocomplete list changes.'
+      )
+    )
+      return
 
     setSaving(true)
     try {
@@ -113,7 +119,12 @@ const GuestListTab = () => {
       await loadCurrentList()
     } catch (e) {
       console.error(e)
-      alert('Failed to save guest list')
+      const msg =
+        e?.response?.data?.detail ||
+        (typeof e?.response?.data === 'string' ? e.response.data : null) ||
+        e?.message ||
+        'Failed to save guest list'
+      alert(typeof msg === 'string' ? msg : JSON.stringify(msg))
     } finally {
       setSaving(false)
     }
@@ -125,7 +136,9 @@ const GuestListTab = () => {
       <p className="text-dusty-rose/70 font-body mb-8 max-w-3xl">
         The list below loads what is already saved. You can edit rows directly, paste a new list and use
         Analyze to replace the review grid, or Save to update the database. The saved list powers RSVP
-        autocomplete.
+        autocomplete only. Each RSVP submission stores the invitation line and attendance as text at submit
+        time — it is not tied to this list by ID, so you can change the list later without altering past
+        RSVPs.
       </p>
 
       {loadingList ? (

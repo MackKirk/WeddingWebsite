@@ -6,6 +6,7 @@ from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.admin_user import AdminUser
 from app.models.guest_invitation import GuestInvitation
+from app.models.rsvp import RSVP
 from app.schemas.guest_invitation import (
     GuestInvitationOut,
     PreviewParseRequest,
@@ -94,12 +95,21 @@ def replace_all_invitations(
     for inv in body.invitations:
         if not inv.participants:
             raise HTTPException(status_code=400, detail=f"Empty participants for: {inv.display_label}")
-    db.query(GuestInvitation).delete()
-    for inv in body.invitations:
-        row = GuestInvitation(
-            display_label=inv.display_label[:500],
-            participants=json.dumps(inv.participants),
+    try:
+        # Clear any stale FKs so Postgres allows deleting guest_invitations. RSVPs are not linked by ID anymore.
+        db.query(RSVP).filter(RSVP.guest_invitation_id.isnot(None)).update(
+            {RSVP.guest_invitation_id: None},
+            synchronize_session=False,
         )
-        db.add(row)
-    db.commit()
+        db.query(GuestInvitation).delete(synchronize_session=False)
+        for inv in body.invitations:
+            row = GuestInvitation(
+                display_label=inv.display_label[:500],
+                participants=json.dumps(inv.participants),
+            )
+            db.add(row)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Could not save guest list: {e!s}") from e
     return {"ok": True, "count": len(body.invitations)}
